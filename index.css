@@ -75,3 +75,12 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@keyframes letter-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
