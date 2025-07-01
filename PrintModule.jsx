@@ -133,7 +133,10 @@ export default function PrintModule({ lines, onBack }) {
               transform: animReady
                 ? "translateX(0) rotate(0deg)"
                 : `translateX(-${pageW + 48 * scale}px) rotate(180deg)`,
-              transition: "transform 1s ease-in-out"
+              "--dx": `${pageW + 48 * scale}px`,
+              animation: animReady
+                ? "right-page-flip 1s ease forwards"
+                : "none"
             }}
           >
             <div

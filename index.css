@@ -84,3 +84,15 @@ button:focus-visible {
     transform: scale(1);
   }
 }
+
+@keyframes right-page-flip {
+  0% {
+    transform: translateX(calc(-1 * var(--dx))) rotate(180deg) translateY(0);
+  }
+  50% {
+    transform: translateX(calc(-1 * var(--dx))) rotate(180deg) translateY(-40px);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg) translateY(0);
+  }
+}
