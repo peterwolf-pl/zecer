@@ -52,6 +52,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
       .catch(() => setLetterFields([]));
   }, []);
 
+
   // DRAG START (mouse/touch na field)
   const handleFieldDragStart = async (field, e) => {
     e.preventDefault();
