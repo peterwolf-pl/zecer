@@ -1,13 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const handleDragEnd = (e) => {
-  // ... przed onLinesChange
-  console.log("Zmiana linii:", newLines.map(l=>l.map(a=>a.char).join("")));
-  // ...
-  onLinesChange(newLines);
-  resetDrag();
-};
-
 const A4_WIDTH = 796;
 const A4_HEIGHT = 1123;
 
@@ -49,9 +41,18 @@ export default function PageComposer({
   const [dragY, setDragY] = useState(null);
   const [dragOffsetY, setDragOffsetY] = useState(0);
 
+  const dragIndexRef = useRef(dragIndex);
+  const dropPositionRef = useRef(dropPosition);
+  const linesRef = useRef(lines);
+
+  useEffect(() => { dragIndexRef.current = dragIndex; }, [dragIndex]);
+  useEffect(() => { dropPositionRef.current = dropPosition; }, [dropPosition]);
+  useEffect(() => { linesRef.current = lines; }, [lines]);
+
   const handleDragStart = (idx, e) => {
     e.preventDefault();
     setDragIndex(idx);
+    dragIndexRef.current = idx;
     const clientY = e.touches?.[0]?.clientY ?? e.clientY;
     const rect = document.getElementById(`line-${idx}`)?.getBoundingClientRect();
     setDragOffsetY(clientY - (rect?.top ?? 0));
@@ -100,44 +101,47 @@ export default function PageComposer({
       }
     }
     setDropPosition(found);
+    dropPositionRef.current = found;
   };
 
   const handleDragEnd = (e) => {
-    if (dragIndex === null || !dropPosition) {
+    const dragIdx = dragIndexRef.current;
+    const dropPos = dropPositionRef.current;
+    if (dragIdx === null || !dropPos) {
       resetDrag();
       return;
     }
-    let newLines = [...lines];
+    let newLines = [...linesRef.current];
     if (
-      dropPosition.pos === "merge" &&
-      dropPosition.targetIdx !== dragIndex
+      dropPos.pos === "merge" &&
+      dropPos.targetIdx !== dragIdx
     ) {
       // MERGE lines
       const merged = [
-        ...newLines[dropPosition.targetIdx],
-        ...newLines[dragIndex],
+        ...newLines[dropPos.targetIdx],
+        ...newLines[dragIdx],
       ];
       newLines = newLines.filter(
-        (_, idx) => idx !== dragIndex && idx !== dropPosition.targetIdx
+        (_, idx) => idx !== dragIdx && idx !== dropPos.targetIdx
       );
       const insertAt =
-        dropPosition.targetIdx > dragIndex
-          ? dropPosition.targetIdx - 1
-          : dropPosition.targetIdx;
+        dropPos.targetIdx > dragIdx
+          ? dropPos.targetIdx - 1
+          : dropPos.targetIdx;
       newLines.splice(insertAt, 0, merged);
       onLinesChange(newLines);
     } else if (
-      (dropPosition.pos === "above" || dropPosition.pos === "below") &&
-      dropPosition.targetIdx !== dragIndex
+      (dropPos.pos === "above" || dropPos.pos === "below") &&
+      dropPos.targetIdx !== dragIdx
     ) {
       // Przesuwanie
-      const line = newLines[dragIndex];
-      newLines.splice(dragIndex, 1);
-      let insertAt = dropPosition.targetIdx;
-      if (dropPosition.pos === "below") insertAt++;
+      const line = newLines[dragIdx];
+      newLines.splice(dragIdx, 1);
+      let insertAt = dropPos.targetIdx;
+      if (dropPos.pos === "below") insertAt++;
       if (
-        dragIndex < dropPosition.targetIdx &&
-        dropPosition.pos === "above"
+        dragIdx < dropPos.targetIdx &&
+        dropPos.pos === "above"
       )
         insertAt--;
       newLines.splice(insertAt, 0, line);
@@ -149,6 +153,8 @@ export default function PageComposer({
   function resetDrag() {
     setDragIndex(null);
     setDropPosition(null);
+    dragIndexRef.current = null;
+    dropPositionRef.current = null;
     setDragY(null);
     setDragOffsetY(0);
     window.removeEventListener("mousemove", handleDragMove);
