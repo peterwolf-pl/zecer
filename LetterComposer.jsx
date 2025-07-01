@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import letterFieldsData from "./poz.json";
 
 const KASZTA_WIDTH = 1618;
 const KASZTA_HEIGHT = 1080;
@@ -13,7 +14,7 @@ function getImageWidth(src) {
 }
 
 export default function LetterComposer({ onMoveLineToPage }) {
-  const [letterFields, setLetterFields] = useState([]);
+  const [letterFields, setLetterFields] = useState(letterFieldsData);
   const [slots, setSlots] = useState(Array(SLOTS_COUNT).fill(null));
   const [activeLetter, setActiveLetter] = useState(null);
   const [ghostPos, setGhostPos] = useState({ x: 0, y: 0, visible: false });
@@ -45,12 +46,6 @@ export default function LetterComposer({ onMoveLineToPage }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    fetch('/poz.json')
-      .then(res => res.json())
-      .then(setLetterFields)
-      .catch(() => setLetterFields([]));
-  }, []);
 
   // DRAG START (mouse/touch na field)
   const handleFieldDragStart = async (field, e) => {
