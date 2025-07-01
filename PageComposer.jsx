@@ -23,7 +23,6 @@ export default function PageComposer({
   onClearLines,
   onGoToPrint,
 }) {
-  console.log("Aktualne lines:", lines.map(l=>l.map(a=>a.char).join("")));
   const [pageW, setPageW] = useState(A4_WIDTH);
   const wrapperRef = useRef();
 
