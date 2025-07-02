@@ -135,7 +135,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
     let idx = slots.lastIndexOf(null);
     if (idx === -1) idx = 0;
     const updatedSlots = [...slots];
-    updatedSlots[idx] = { ...activeLetter, id: Math.random().toString(36), animate: true };
+    updatedSlots[idx] = { ...activeLetter, id: Math.random().toString(36) };
     setSlots(updatedSlots);
     setActiveLetter(null);
     setGhostPos({ x: 0, y: 0, visible: false });
@@ -156,13 +156,6 @@ export default function LetterComposer({ onMoveLineToPage }) {
     setSlots(updatedSlots);
   };
 
-  const clearSlotAnimation = (i) => {
-    setSlots((prev) => {
-      const arr = [...prev];
-      if (arr[i]) arr[i] = { ...arr[i], animate: false };
-      return arr;
-    });
-  };
 
   const scale = kasztaW / KASZTA_WIDTH;
   const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
@@ -196,11 +189,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
             width={slot.width * scale}
             height={96 * scale}
             draggable={false}
-            onAnimationEnd={() => clearSlotAnimation(i)}
-            style={{
-              display: "block",
-              animation: slot.animate ? "letter-pop 0.3s ease-out forwards" : "none"
-            }}
+            style={{ display: "block" }}
           />
         </div>
       );
