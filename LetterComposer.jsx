@@ -18,6 +18,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
   const [activeLetter, setActiveLetter] = useState(null);
   const [ghostPos, setGhostPos] = useState({ x: 0, y: 0, visible: false });
   const [isDragging, setIsDragging] = useState(false);
+  const [pickupAnim, setPickupAnim] = useState(false);
   const kasztaRef = useRef();
   const wierszownikRef = useRef();
   const [kasztaW, setKasztaW] = useState(KASZTA_WIDTH);
@@ -58,6 +59,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
     e.preventDefault();
     const width = await getImageWidth(field.img);
     setActiveLetter({ ...field, width });
+    setPickupAnim(true);
+    setTimeout(() => setPickupAnim(false), 300);
     let x = 0, y = 0;
     if (e.touches && e.touches[0]) {
       x = e.touches[0].clientX;
@@ -132,7 +135,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
     let idx = slots.lastIndexOf(null);
     if (idx === -1) idx = 0;
     const updatedSlots = [...slots];
-    updatedSlots[idx] = { ...activeLetter, id: Math.random().toString(36) };
+    updatedSlots[idx] = { ...activeLetter, id: Math.random().toString(36), animate: true };
     setSlots(updatedSlots);
     setActiveLetter(null);
     setGhostPos({ x: 0, y: 0, visible: false });
@@ -151,6 +154,14 @@ export default function LetterComposer({ onMoveLineToPage }) {
     const updatedSlots = [...slots];
     updatedSlots[i] = null;
     setSlots(updatedSlots);
+  };
+
+  const clearSlotAnimation = (i) => {
+    setSlots((prev) => {
+      const arr = [...prev];
+      if (arr[i]) arr[i] = { ...arr[i], animate: false };
+      return arr;
+    });
   };
 
   const scale = kasztaW / KASZTA_WIDTH;
@@ -185,7 +196,11 @@ export default function LetterComposer({ onMoveLineToPage }) {
             width={slot.width * scale}
             height={96 * scale}
             draggable={false}
-            style={{ display: "block" }}
+            onAnimationEnd={() => clearSlotAnimation(i)}
+            style={{
+              display: "block",
+              animation: slot.animate ? "letter-pop 0.3s ease-out forwards" : "none"
+            }}
           />
         </div>
       );
@@ -209,7 +224,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
           pointerEvents: "none",
           zIndex: 1000,
           opacity: 1,
-          filter: "drop-shadow(2px 2px 2px #999)"
+          filter: "drop-shadow(2px 2px 2px #999)",
+          animation: pickupAnim ? "letter-pop 0.3s ease-out forwards" : undefined
         }}
       />
     );

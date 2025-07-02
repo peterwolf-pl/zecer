@@ -75,3 +75,24 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@keyframes letter-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes right-page-flip {
+  0% {
+    transform: translateX(calc(-1 * var(--dx))) rotateX(180deg) translateY(0);
+  }
+  50% {
+    transform: translateX(calc(-1 * var(--dx))) rotateX(180deg) translateY(-40px);
+  }
+  100% {
+    transform: translateX(0) rotateX(0deg) translateY(0);
+  }
+}
