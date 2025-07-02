@@ -1,10 +1,10 @@
-:root {
-  @font-face {font-family: GrohmanGrotesk-Classic;
+@font-face {
+  font-family: GrohmanGrotesk-Classic;
   src: url('fonts/GG-Classic_2.0.woff') format('woff'),
        url('fonts/GG-Classic_2.0.woff2') format('woff2');
-     }}
+}
 
-    :root {
+:root {
   font-family: GrohmanGrotesk-Classic;
   line-height: 1.5;
   font-weight: 400;
