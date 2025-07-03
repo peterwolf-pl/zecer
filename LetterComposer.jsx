@@ -134,12 +134,26 @@ export default function LetterComposer({ onMoveLineToPage }) {
   function placeLetter() {
     let idx = slots.lastIndexOf(null);
     if (idx === -1) idx = 0;
+    const newLetter = {
+      ...activeLetter,
+      id: Math.random().toString(36),
+      animate: true,
+    };
     const updatedSlots = [...slots];
-    updatedSlots[idx] = { ...activeLetter, id: Math.random().toString(36) };
+    updatedSlots[idx] = newLetter;
     setSlots(updatedSlots);
     setActiveLetter(null);
     setGhostPos({ x: 0, y: 0, visible: false });
     setIsDragging(false);
+    // Remove animation flag after animation ends
+    setTimeout(() => {
+      setSlots((cur) => {
+        const copy = [...cur];
+        const s = copy[idx];
+        if (s && s.id === newLetter.id) copy[idx] = { ...s, animate: false };
+        return copy;
+      });
+    }, 300);
   }
 
   // Kaszta – klik/tap poza polem kaszty anuluje ghosta
@@ -178,7 +192,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
             width: slot.width * scale,
             height: 96 * scale,
             zIndex: 3,
-            cursor: "pointer"
+            cursor: "pointer",
+            animation: slot.animate ? "letter-pop 0.3s ease-out forwards" : undefined
           }}
           onClick={() => removeLetterFromSlot(i)}
           title="Kliknij, aby usunąć literę z wierszownika"
