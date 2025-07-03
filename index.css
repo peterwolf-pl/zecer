@@ -1,10 +1,10 @@
-:root {
-  @font-face {font-family: GrohmanGrotesk-Classic;
+@font-face {
+  font-family: GrohmanGrotesk-Classic;
   src: url('fonts/GG-Classic_2.0.woff') format('woff'),
        url('fonts/GG-Classic_2.0.woff2') format('woff2');
-     }}
+}
 
-    :root {
+:root {
   font-family: GrohmanGrotesk-Classic;
   line-height: 1.5;
   font-weight: 400;
@@ -73,5 +73,26 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@keyframes letter-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes right-page-flip {
+  0% {
+    transform: translateX(calc(-1 * var(--dx))) rotateX(180deg) translateY(0);
+  }
+  50% {
+    transform: translateX(calc(-1 * var(--dx))) rotateX(180deg) translateY(-40px);
+  }
+  100% {
+    transform: translateX(0) rotateX(0deg) translateY(0);
   }
 }

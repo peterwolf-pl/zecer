@@ -5,6 +5,7 @@ const A4_HEIGHT = 1123;
 
 export default function PrintModule({ lines, onBack }) {
   const [pageW, setPageW] = useState(A4_WIDTH);
+  const [animReady, setAnimReady] = useState(false);
 
   // Dynamiczne skalowanie dwóch kartek w oknie
   useEffect(() => {
@@ -24,6 +25,11 @@ export default function PrintModule({ lines, onBack }) {
 
   const scale = pageW / A4_WIDTH;
   const pageH = pageW * (A4_HEIGHT / A4_WIDTH);
+
+  useEffect(() => {
+    const t = setTimeout(() => setAnimReady(true), 500);
+    return () => clearTimeout(t);
+  }, []);
 
   // Lustrzane odbicie: linie od dołu, każda linia od końca i flipped poziomo
   const mirroredLines = [...lines];
@@ -123,15 +129,23 @@ export default function PrintModule({ lines, onBack }) {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              justifyContent: "flex-start"
+              justifyContent: "flex-start",
+              transform: animReady
+                ? "translateX(0) rotateX(0deg)"
+                : `translateX(-${pageW + 48 * scale}px) rotateX(180deg)`,
+              "--dx": `${pageW + 48 * scale}px`,
+              animation: animReady
+                ? "right-page-flip 1s ease forwards"
+                : "none",
+              transformStyle: "preserve-3d",
+              backfaceVisibility: "hidden"
             }}
           >
             <div
               style={{
                 width: "100%",
                 height: "100%",
-             // transform: "scaleX(-1)", // odwraca całą zawartość poziomo
-                display: "flex",  
+                display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start",
                 justifyContent: "flex-start"
