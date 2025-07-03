@@ -18,6 +18,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
   const [activeLetter, setActiveLetter] = useState(null);
   const [ghostPos, setGhostPos] = useState({ x: 0, y: 0, visible: false });
   const [isDragging, setIsDragging] = useState(false);
+  const [pickupAnim, setPickupAnim] = useState(false);
   const kasztaRef = useRef();
   const wierszownikRef = useRef();
   const [kasztaW, setKasztaW] = useState(KASZTA_WIDTH);
@@ -58,6 +59,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
     e.preventDefault();
     const width = await getImageWidth(field.img);
     setActiveLetter({ ...field, width });
+    setPickupAnim(true);
+    setTimeout(() => setPickupAnim(false), 300);
     let x = 0, y = 0;
     if (e.touches && e.touches[0]) {
       x = e.touches[0].clientX;
@@ -167,6 +170,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
     setSlots(updatedSlots);
   };
 
+
   const scale = kasztaW / KASZTA_WIDTH;
   const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
   const lineW = kasztaW * 0.8; // WIERSZOWNIK 80% kaszty
@@ -224,7 +228,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
           pointerEvents: "none",
           zIndex: 1000,
           opacity: 1,
-          filter: "drop-shadow(2px 2px 2px #999)"
+          filter: "drop-shadow(2px 2px 2px #999)",
+          animation: pickupAnim ? "letter-pop 0.3s ease-out forwards" : undefined
         }}
       />
     );

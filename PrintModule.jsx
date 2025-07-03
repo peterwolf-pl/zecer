@@ -131,9 +131,7 @@ export default function PrintModule({ lines, onBack }) {
               alignItems: "flex-start",
               justifyContent: "flex-start",
               transform: animReady
-                ? "translateX(0) rotate(0deg)"
-                : `translateX(-${pageW + 48 * scale}px) rotate(180deg)`,
-              transition: "transform 1s ease-in-out"
+
             }}
           >
             <div
