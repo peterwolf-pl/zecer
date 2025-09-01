@@ -216,7 +216,7 @@ export default function LetterComposer() {
       style={{
         width: "100vw",
         height: "100vh",
-        background: "#f5f6f8",
+        background: "#d4d4d4",
         overflow: "hidden",
         minHeight: "100vh",
         display: "flex",
