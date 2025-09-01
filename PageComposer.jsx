@@ -229,7 +229,6 @@ export default function PageComposer({
         <div
           ref={wrapperRef}
           style={{
-            backgroundColor: "#3a3e41",
             backgroundImage: "url(/assets/blacha.png)",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
