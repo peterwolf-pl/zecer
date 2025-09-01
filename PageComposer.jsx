@@ -364,7 +364,11 @@ export default function PageComposer({
             aria-label="Przejdź do druku"
           >
             <span
-              style={{ display: "inline-block", transform: "translateY(0px)" }}
+              style={{
+                display: "inline-block",
+                transform: "translateY(0px)",
+                fontFamily: "Arial, sans-serif",
+              }}
             >
               &#8594;
             </span>
@@ -403,6 +407,7 @@ export default function PageComposer({
               style={{
                 display: "inline-block",
                 transform: "rotate(20deg) translateX(-5px) ",
+                fontFamily: "Arial, sans-serif",
               }}
             >
               &#128465;
@@ -429,6 +434,7 @@ export default function PageComposer({
               style={{
                 display: "inline-block",
                 transform: "rotate(180deg) translateY(2px)",
+                fontFamily: "Arial, sans-serif",
               }}
             >
               &#8594;

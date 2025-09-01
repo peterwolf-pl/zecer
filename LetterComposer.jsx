@@ -399,9 +399,15 @@ export default function LetterComposer({ onMoveLineToPage }) {
             title="Przenieś linię na stronę"
             aria-label="Przenieś linię na stronę"
           >
-            <span style={{ display: "inline-block", transform: "translateY(0px)" }}>
-              &#8594;
-            </span>
+          <span
+            style={{
+              display: "inline-block",
+              transform: "translateY(0px)",
+              fontFamily: "Arial, sans-serif",
+            }}
+          >
+            &#8594;
+          </span>
           </button>
         </div>
         {renderGhostLetter()}

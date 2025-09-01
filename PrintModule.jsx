@@ -215,9 +215,15 @@ export default function PrintModule({ lines, onBack }) {
             title="Powrót"
             aria-label="Powrót"
           >
-            <span style={{ display: "inline-block", transform: "rotate(180deg) translateY(2px)" }}>
-              &#8594;
-            </span>
+          <span
+            style={{
+              display: "inline-block",
+              transform: "rotate(180deg) translateY(2px)",
+              fontFamily: "Arial, sans-serif",
+            }}
+          >
+            &#8594;
+          </span>
           </button>
         </div>
       </div>
