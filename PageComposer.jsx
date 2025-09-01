@@ -205,7 +205,6 @@ export default function PageComposer({
       style={{
         minHeight: "100vh",
         width: "100vw",
-        background: "#f5f6f8",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
