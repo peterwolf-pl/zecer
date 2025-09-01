@@ -205,7 +205,6 @@ export default function PageComposer({
       style={{
         minHeight: "100vh",
         width: "100vw",
-        background: "#f5f6f8",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -230,7 +229,11 @@ export default function PageComposer({
         <div
           ref={wrapperRef}
           style={{
-            background: "#3a3e41",
+            backgroundColor: "#3a3e41",
+            backgroundImage: "url(/assets/blacha.png)",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "cover",
             border: "4px solid #222",
             borderRadius: 6 * scale,
             width: pageW,
