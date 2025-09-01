@@ -100,7 +100,9 @@ export default function PrintModule({ lines, onBack }) {
                 width: "100%",
                 height: pageH + 800 * scale,
                 objectFit: "cover",
-                pointerEvents: "none"
+                pointerEvents: "none",
+                transform: "translateY(20%) scale(0.85)",
+                transformOrigin: "top left"
               }}
             />
             {lines.map((line, i) => (
