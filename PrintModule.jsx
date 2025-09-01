@@ -179,11 +179,13 @@ export default function PrintModule({ lines, onBack }) {
             </div>
           </div>
         </div>
-        {/* Przykładowy przycisk powrotu (możesz przenieść do bocznego panelu lub stopki) */}
+        {/* Przycisk powrotu */}
         <button
           onClick={onBack}
           style={{
-            margin: "30px auto 0 auto",
+            position: "absolute",
+            left: 10,
+            bottom: 10,
             background: "#222",
             color: "#fff",
             border: "2px solid #888",
@@ -194,7 +196,7 @@ export default function PrintModule({ lines, onBack }) {
             cursor: "pointer",
             boxShadow: "2px 2px 8px #0002",
             outline: "none",
-            display: "block"
+            zIndex: 10,
           }}
           title="Powrót"
           aria-label="Powrót"
