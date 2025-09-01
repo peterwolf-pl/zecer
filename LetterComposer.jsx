@@ -3,8 +3,11 @@ import React, { useRef, useState, useEffect } from "react";
 const KASZTA_WIDTH = 1618;
 const KASZTA_HEIGHT = 1080;
 const SLOTS_COUNT = 20;
-const LINE_OFFSET_RIGHT = 340;
-const LINE_OFFSET_BOTTOM = 240;
+// Starting point for the top-right corner of the first letter
+// measured from the wierszownik photo edges.
+// Offsets are scaled with the image dimensions.
+const LINE_OFFSET_RIGHT = 120;
+const LINE_OFFSET_TOP = 170;
 const LETTER_HEIGHT = 96;
 
 function getImageWidth(src) {
@@ -170,7 +173,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
     ? (wierszownikSize.w - LINE_OFFSET_RIGHT) * lineScale
     : 0;
   const lineStartY = wierszownikSize.h
-    ? (wierszownikSize.h - LINE_OFFSET_BOTTOM) * lineScale
+    ? LINE_OFFSET_TOP * lineScale
     : 0;
 
   function renderLettersOnLine() {
@@ -187,7 +190,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
           style={{
             position: "absolute",
             left: lineStartX - right,
-            top: lineStartY - LETTER_HEIGHT * letterScale,
+            top: lineStartY,
             width: slot.width * letterScale,
             height: LETTER_HEIGHT * letterScale,
             zIndex: 3,
@@ -220,7 +223,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
         style={{
           position: "fixed",
           left: ghostPos.x - (activeLetter.width * letterScale) / 2,
-          top: ghostPos.y - (LETTER_HEIGHT * letterScale),
+          top: ghostPos.y,
           width: activeLetter.width * letterScale,
           height: LETTER_HEIGHT * letterScale,
           pointerEvents: "none",
