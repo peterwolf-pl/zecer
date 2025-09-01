@@ -19,22 +19,31 @@ export default function PageComposer({
 }) {
   const [pageW, setPageW] = useState(A4_WIDTH);
   const wrapperRef = useRef();
+  const [sheetDims, setSheetDims] = useState({ width: A4_WIDTH, height: A4_HEIGHT });
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/assets/blacha.png";
+    img.onload = () => {
+      setSheetDims({ width: img.width, height: img.height });
+    };
+  }, []);
 
   useEffect(() => {
     function handleResize() {
       const maxW = window.innerWidth * 0.95;
       const stopkaH = 40 + 18;
       const maxH = window.innerHeight - stopkaH - 32;
-      const byHeight = maxH * (A4_WIDTH / A4_HEIGHT);
-      setPageW(Math.min(A4_WIDTH, maxW, byHeight));
+      const byHeight = maxH * (sheetDims.width / sheetDims.height);
+      setPageW(Math.min(sheetDims.width, maxW, byHeight));
     }
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [sheetDims]);
 
-  const scale = pageW / A4_WIDTH;
-  const pageH = pageW * (A4_HEIGHT / A4_WIDTH);
+  const scale = pageW / sheetDims.width;
+  const pageH = pageW * (sheetDims.height / sheetDims.width);
   const sheetOffsetRight = SHEET_OFFSET_RIGHT * scale;
   const sheetOffsetTop = SHEET_OFFSET_TOP * scale;
 
@@ -236,8 +245,7 @@ export default function PageComposer({
             backgroundImage: "url(/assets/blacha.png)",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
-            backgroundSize: "cover",
-            border: "4px solid #222",
+            backgroundSize: "100% 100%",
             borderRadius: 6 * scale,
             width: pageW,
             height: pageH,
@@ -266,8 +274,8 @@ export default function PageComposer({
                   flexDirection: "row",
                   alignItems: "flex-end",
                   justifyContent: "flex-end",
-                  margin: `0 0 ${-24 * scale}px 0`,
-                  minHeight: 96 / 3 * scale,
+                  margin: `0 0 ${8 * scale}px 0`,
+                  minHeight: (96 / 3) * scale,
                   maxWidth: `calc(100% - ${sheetOffsetRight}px)`,
                   cursor: dragIndex === null ? "grab" : "default",
                   userSelect: "none",
