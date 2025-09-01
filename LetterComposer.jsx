@@ -3,6 +3,9 @@ import React, { useRef, useState, useEffect } from "react";
 const KASZTA_WIDTH = 1618;
 const KASZTA_HEIGHT = 1080;
 const SLOTS_COUNT = 20;
+const LINE_OFFSET_RIGHT = 340;
+const LINE_OFFSET_BOTTOM = 240;
+const LETTER_HEIGHT = 96;
 
 function getImageWidth(src) {
   return new Promise((resolve) => {
@@ -22,6 +25,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
   const kasztaRef = useRef();
   const wierszownikRef = useRef();
   const [kasztaW, setKasztaW] = useState(KASZTA_WIDTH);
+  const [wierszownikSize, setWierszownikSize] = useState({ w: 0, h: 0 });
 
   // BLOKUJ SCROLL strony
   useEffect(() => {
@@ -160,23 +164,31 @@ export default function LetterComposer({ onMoveLineToPage }) {
   const scale = kasztaW / KASZTA_WIDTH;
   const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
   const lineW = kasztaW * 0.8; // WIERSZOWNIK 80% kaszty
+  const lineScale = wierszownikSize.w ? lineW / wierszownikSize.w : scale;
+  const lineStartX = wierszownikSize.w
+    ? (wierszownikSize.w - LINE_OFFSET_RIGHT) * lineScale
+    : 0;
+  const lineStartY = wierszownikSize.h
+    ? (wierszownikSize.h - LINE_OFFSET_BOTTOM) * lineScale
+    : 0;
 
   function renderLettersOnLine() {
+    if (!wierszownikSize.w) return null;
     let right = 0;
     let visibleSlots = [];
     for (let i = slots.length - 1; i >= 0; i--) {
       const slot = slots[i];
       if (!slot) continue;
-      right += slot.width * scale;
+      right += slot.width * lineScale;
       visibleSlots.push(
         <div
           key={slot.id}
           style={{
             position: "absolute",
-            left: lineW - right,
-            top: `${16 * scale}px`,
-            width: slot.width * scale,
-            height: 96 * scale,
+            left: lineStartX - right,
+            top: lineStartY - LETTER_HEIGHT * lineScale,
+            width: slot.width * lineScale,
+            height: LETTER_HEIGHT * lineScale,
             zIndex: 3,
             cursor: "pointer"
           }}
@@ -186,8 +198,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
           <img
             src={slot.img}
             alt={slot.char}
-            width={slot.width * scale}
-            height={96 * scale}
+            width={slot.width * lineScale}
+            height={LETTER_HEIGHT * lineScale}
             draggable={false}
             style={{ display: "block" }}
           />
@@ -206,10 +218,10 @@ export default function LetterComposer({ onMoveLineToPage }) {
         alt={activeLetter.char}
         style={{
           position: "fixed",
-          left: ghostPos.x - (activeLetter.width * scale) / 2,
-          top: ghostPos.y - (96 * scale),
-          width: activeLetter.width * scale,
-          height: 96 * scale,
+          left: ghostPos.x - (activeLetter.width * lineScale) / 2,
+          top: ghostPos.y - (LETTER_HEIGHT * lineScale),
+          width: activeLetter.width * lineScale,
+          height: LETTER_HEIGHT * lineScale,
           pointerEvents: "none",
           zIndex: 1000,
           opacity: 1,
@@ -324,37 +336,30 @@ export default function LetterComposer({ onMoveLineToPage }) {
             style={{
               position: "relative",
               width: lineW,
-              minHeight: 116 * scale,
+              height: wierszownikSize.h
+                ? wierszownikSize.h * lineScale
+                : 116 * scale,
               margin: "1px auto 0px auto",
               borderRadius: 8 * scale,
-              background: "#a6a3a8",
               touchAction: "none",
               flexShrink: 0,
               boxSizing: "border-box"
             }}
           >
-            <div
+            <img
+              src="/assets/wierszownik.jpg"
+              alt="Wierszownik"
+              onLoad={e =>
+                setWierszownikSize({
+                  w: e.target.naturalWidth,
+                  h: e.target.naturalHeight
+                })
+              }
+              draggable={false}
               style={{
-                position: "absolute",
-                left: -5 * scale,
-                top: 96 * scale + 16 * scale,
-                width: lineW + (10 * scale),
-                height: 8 * scale,
-                background: "#111",
-                borderRadius: 8 * scale,
-                zIndex: 1
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                right: -4 * scale,
-                top: 0,
-                width: 8 * scale,
-                height: 116 * scale + 3,
-                background: "#111",
-                borderRadius: 8 * scale,
-                zIndex: 1
+                width: "100%",
+                height: "auto",
+                display: "block"
               }}
             />
             {renderLettersOnLine()}
