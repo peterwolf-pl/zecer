@@ -340,12 +340,10 @@ export default function PageComposer({
           style={{
             position: "absolute",
             right: 10,
-            top: "50%",
-            transform: "translateY(-50%)",
+            bottom: 70,
             zIndex: 10,
             display: "flex",
             flexDirection: "column",
-            gap: 1,
           }}
         >
           <button
@@ -355,9 +353,9 @@ export default function PageComposer({
               color: "#fff",
               border: "2px solid #888",
               borderRadius: "10%",
-              width: 30,
-              height: 30,
-              fontSize: 14,
+              width: 39,
+              height: 39,
+              fontSize: 18,
               cursor: "pointer",
               boxShadow: "2px 2px 8px #0002",
               outline: "none",
@@ -366,7 +364,11 @@ export default function PageComposer({
             aria-label="Przejdź do druku"
           >
             <span
-              style={{ display: "inline-block", transform: "translateY(0px)" }}
+              style={{
+                display: "inline-block",
+                transform: "translateY(0px)",
+                fontFamily: "Arial, sans-serif",
+              }}
             >
               &#8594;
             </span>
@@ -377,41 +379,13 @@ export default function PageComposer({
           style={{
             position: "absolute",
             left: 10,
-            top: "50%",
-            transform: "translateY(-50%)",
+            bottom: 70,
             zIndex: 10,
             display: "flex",
             flexDirection: "column",
-            gap: 0,
+            gap: 10,
           }}
         >
-          <button
-            onClick={onBack}
-            style={{
-              background: "#222",
-              color: "#fff",
-              border: "2px solid #888",
-              borderRadius: "10%",
-              width: 30,
-              height: 30,
-              fontSize: 14,
-              cursor: "pointer",
-              marginBottom: 10,
-              boxShadow: "2px 2px 8px #0002",
-              outline: "none",
-            }}
-            title="Powrót do składu zecerskiego"
-            aria-label="Powrót do składu zecerskiego"
-          >
-            <span
-              style={{
-                display: "inline-block",
-                transform: "rotate(180deg) translateY(2px)",
-              }}
-            >
-              &#8594;
-            </span>
-          </button>
           <button
             onClick={onClearLines}
             style={{
@@ -419,9 +393,9 @@ export default function PageComposer({
               color: "#fff",
               border: "2px  solid #ff0000",
               borderRadius: "10%",
-              width: 30,
-              height: 30,
-              fontSize: 14,
+              width: 39,
+              height: 39,
+              fontSize: 18,
               cursor: "pointer",
               boxShadow: "2px 2px 8px #0002",
               outline: "none",
@@ -433,9 +407,37 @@ export default function PageComposer({
               style={{
                 display: "inline-block",
                 transform: "rotate(20deg) translateX(-5px) ",
+                fontFamily: "Arial, sans-serif",
               }}
             >
               &#128465;
+            </span>
+          </button>
+          <button
+            onClick={onBack}
+            style={{
+              background: "#222",
+              color: "#fff",
+              border: "2px solid #888",
+              borderRadius: "10%",
+              width: 39,
+              height: 39,
+              fontSize: 18,
+              cursor: "pointer",
+              boxShadow: "2px 2px 8px #0002",
+              outline: "none",
+            }}
+            title="Powrót do składu zecerskiego"
+            aria-label="Powrót do składu zecerskiego"
+          >
+            <span
+              style={{
+                display: "inline-block",
+                transform: "rotate(180deg) translateY(2px)",
+                fontFamily: "Arial, sans-serif",
+              }}
+            >
+              &#8594;
             </span>
           </button>
         </div>
