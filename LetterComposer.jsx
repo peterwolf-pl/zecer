@@ -252,18 +252,19 @@ export default function LetterComposer({ onMoveLineToPage }) {
       }}
     >
       {/* GŁÓWNY BLOK */}
-      <div
-        style={{
-          flex: "1 1 auto",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 0,
-          width: "100%",
-          overflow: "hidden"
-        }}
-      >
+        <div
+          style={{
+            flex: "1 1 auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 0,
+            width: "100%",
+            overflow: "hidden",
+            position: "relative",
+          }}
+        >
         {/* Kaszta */}
         <div
           ref={kasztaRef}
@@ -326,14 +327,15 @@ export default function LetterComposer({ onMoveLineToPage }) {
             />
           ))}
         </div>
-        {/* Wierszownik + GUZIK PO PRAWEJ */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          justifyContent: "center",
-          marginTop: 0
-        }}>
+        {/* Wierszownik */}
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            marginTop: 0,
+          }}
+        >
           <div
             ref={wierszownikRef}
             style={{
@@ -343,7 +345,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
               margin: "1px auto 0px auto",
               touchAction: "none",
               flexShrink: 0,
-              boxSizing: "border-box"
+              boxSizing: "border-box",
             }}
           >
             <img
@@ -353,43 +355,53 @@ export default function LetterComposer({ onMoveLineToPage }) {
                 width: "100%",
                 height: "100%",
                 display: "block",
-                pointerEvents: "none"
+                pointerEvents: "none",
               }}
             />
             {renderLettersOnLine()}
           </div>
-          {/* GUZIK PRZENIESIENIA LINII */}
+        </div>
+        {/* Panel boczny po PRAWEJ */}
+        <div
+          style={{
+            position: "absolute",
+            right: 10,
+            bottom: 70,
+            zIndex: 10,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <button
+            onClick={() => {
+              const line = slots.filter(Boolean);
+              if (typeof onMoveLineToPage === "function") {
+                onMoveLineToPage(line);
+                setSlots(Array(SLOTS_COUNT).fill(null));
+              }
+            }}
             style={{
-              
-              marginRight: 10,
-              height: 30,
-              width: 30,
-              borderRadius: "15%",
               background: "#222",
-              border: "2px solid #888",
               color: "#fff",
-              fontSize: 14,
+              border: "2px solid #888",
+              borderRadius: "10%",
+              width: 39,
+              height: 39,
+              fontSize: 24,
+              fontWeight: "bold",
               cursor: "pointer",
+              boxShadow: "2px 2px 8px #0002",
+              outline: "none",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "1px 2px 8px #0002",
-              transition: "background 0.15s",
-              outline: "none"
             }}
-        onClick={() => {
-  const line = slots.filter(Boolean);
-  if (typeof onMoveLineToPage === "function") {
-    onMoveLineToPage(line); // nawet jak pusty
-    setSlots(Array(SLOTS_COUNT).fill(null));
-  }
-}}
-
             title="Przenieś linię na stronę"
             aria-label="Przenieś linię na stronę"
           >
-            <span style={{ display: "inline-block", transform: "translateY(0px)" }}>&#8594;</span>
+            <span style={{ display: "inline-block", transform: "translateY(0px)" }}>
+              &#8594;
+            </span>
           </button>
         </div>
         {renderGhostLetter()}

@@ -47,18 +47,19 @@ export default function PrintModule({ lines, onBack }) {
         boxSizing: "border-box"
       }}
     >
-      <div
-        style={{
-          flex: "1 1 auto",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 0,
-          width: "100%",
-          overflow: "hidden"
-        }}
-      >
+        <div
+          style={{
+            flex: "1 1 auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 0,
+            width: "100%",
+            overflow: "hidden",
+            position: "relative",
+          }}
+        >
         <div
           style={{
             display: "flex",
@@ -182,30 +183,43 @@ export default function PrintModule({ lines, onBack }) {
             </div>
           </div>
         </div>
-        {/* Przykładowy przycisk powrotu (możesz przenieść do bocznego panelu lub stopki) */}
-        <button
-          onClick={onBack}
+        {/* Panel boczny (lewy) */}
+        <div
           style={{
-            margin: "30px auto 0 auto",
-            background: "#222",
-            color: "#fff",
-            border: "2px solid #888",
-            borderRadius: "10%",
-            width: 30,
-            height: 30,
-            fontSize: 13,
-            cursor: "pointer",
-            boxShadow: "2px 2px 8px #0002",
-            outline: "none",
-            display: "block"
+            position: "absolute",
+            left: 10,
+            bottom: 70,
+            zIndex: 10,
+            display: "flex",
+            flexDirection: "column",
           }}
-          title="Powrót"
-          aria-label="Powrót"
         >
-          <span style={{ display: "inline-block", transform: "rotate(180deg) translateY(2px)" }}>
-            &#8594;
-          </span>
-        </button>
+          <button
+            onClick={onBack}
+            style={{
+              background: "#222",
+              color: "#fff",
+              border: "2px solid #888",
+              borderRadius: "10%",
+              width: 39,
+              height: 39,
+              fontSize: 24,
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: "2px 2px 8px #0002",
+              outline: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            title="Powrót"
+            aria-label="Powrót"
+          >
+            <span style={{ display: "inline-block", transform: "rotate(180deg) translateY(2px)" }}>
+              &#8594;
+            </span>
+          </button>
+        </div>
       </div>
       {/* STOPKA */}
       <p
