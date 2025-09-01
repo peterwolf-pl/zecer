@@ -4,6 +4,8 @@ const A4_WIDTH = 796;
 const A4_HEIGHT = 1123;
 const SHEET_OFFSET_RIGHT = 120;
 const SHEET_OFFSET_TOP = 170;
+const LETTER_SCALE = 2;
+const LETTER_BASE_HEIGHT = 96 / 3;
 
 
 
@@ -186,7 +188,7 @@ export default function PageComposer({
       return {
         background: "#e3f2ff",
         borderRadius: 4 * scale,
-        minHeight: 32 * scale,
+        minHeight: LETTER_BASE_HEIGHT * LETTER_SCALE * scale,
         outline: "2px dashed #28b0ef",
         transition: "background 0.12s",
       };
@@ -275,7 +277,7 @@ export default function PageComposer({
                   alignItems: "flex-end",
                   justifyContent: "flex-end",
                   margin: `0 0 ${8 * scale}px 0`,
-                  minHeight: (96 / 3) * scale,
+                  minHeight: LETTER_BASE_HEIGHT * LETTER_SCALE * scale,
                   maxWidth: `calc(100% - ${sheetOffsetRight}px)`,
                   cursor: dragIndex === null ? "grab" : "default",
                   userSelect: "none",
@@ -290,8 +292,8 @@ export default function PageComposer({
                     key={j}
                     src={letter.img}
                     alt={letter.char}
-                    width={(letter.width / 3) * scale}
-                    height={(96 / 3) * scale}
+                    width={(letter.width / 3) * scale * LETTER_SCALE}
+                    height={LETTER_BASE_HEIGHT * scale * LETTER_SCALE}
                     style={{ marginLeft: 0, pointerEvents: "none" }}
                     draggable={false}
                   />
@@ -324,8 +326,8 @@ export default function PageComposer({
                   key={j}
                   src={letter.img}
                   alt={letter.char}
-                  width={(letter.width / 3) * scale}
-                  height={(96 / 3) * scale}
+                  width={(letter.width / 3) * scale * LETTER_SCALE}
+                  height={LETTER_BASE_HEIGHT * scale * LETTER_SCALE}
                   style={{ marginLeft: 0, pointerEvents: "none" }}
                   draggable={false}
                 />
