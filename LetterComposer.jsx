@@ -4,6 +4,8 @@ const KASZTA_WIDTH = 1618;
 const KASZTA_HEIGHT = 1080;
 const SLOTS_COUNT = 20;
 const LETTER_HEIGHT = 96;
+const LINE_OFFSET_RIGHT = 120;
+const LINE_OFFSET_TOP = 170;
 
 function getImageWidth(src) {
   return new Promise((resolve) => {
@@ -162,6 +164,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
   const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
   const lineW = kasztaW * 0.8; // WIERSZOWNIK 80% kaszty
   const letterScale = scale * 2;
+  const offsetRight = LINE_OFFSET_RIGHT * scale;
+  const offsetTop = LINE_OFFSET_TOP * scale;
 
   function renderLettersOnLine() {
     let right = 0;
@@ -175,8 +179,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
           key={slot.id}
           style={{
             position: "absolute",
-            left: lineW - right,
-            top: `${16 * letterScale}px`,
+            left: lineW - offsetRight - right,
+            top: offsetTop,
             width: slot.width * letterScale,
             height: LETTER_HEIGHT * letterScale,
             zIndex: 3,
@@ -337,9 +341,9 @@ export default function LetterComposer({ onMoveLineToPage }) {
             <div
               style={{
                 position: "absolute",
-                left: -5 * letterScale,
-                top: 96 * letterScale + 16 * letterScale,
-                width: lineW + (10 * letterScale),
+                left: offsetRight - 5 * letterScale,
+                top: offsetTop + LETTER_HEIGHT * letterScale,
+                width: lineW - offsetRight + 10 * letterScale,
                 height: 8 * letterScale,
                 background: "#111",
                 borderRadius: 8 * letterScale,
@@ -349,10 +353,10 @@ export default function LetterComposer({ onMoveLineToPage }) {
             <div
               style={{
                 position: "absolute",
-                right: -4 * letterScale,
-                top: 0,
+                right: offsetRight - 4 * letterScale,
+                top: offsetTop - 4 * letterScale,
                 width: 8 * letterScale,
-                height: 116 * letterScale + 3,
+                height: LETTER_HEIGHT * letterScale + 8 * letterScale,
                 background: "#111",
                 borderRadius: 8 * letterScale,
                 zIndex: 1

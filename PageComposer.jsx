@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 const A4_WIDTH = 796;
 const A4_HEIGHT = 1123;
+const SHEET_OFFSET_RIGHT = 120;
+const SHEET_OFFSET_TOP = 170;
 
 
 
@@ -33,6 +35,8 @@ export default function PageComposer({
 
   const scale = pageW / A4_WIDTH;
   const pageH = pageW * (A4_HEIGHT / A4_WIDTH);
+  const sheetOffsetRight = SHEET_OFFSET_RIGHT * scale;
+  const sheetOffsetTop = SHEET_OFFSET_TOP * scale;
 
   // DRAG
   const [dragIndex, setDragIndex] = useState(null);
@@ -245,6 +249,9 @@ export default function PageComposer({
             flexDirection: "column",
             alignItems: "flex-end",
             justifyContent: "flex-start",
+            paddingRight: sheetOffsetRight,
+            paddingTop: sheetOffsetTop,
+            boxSizing: "border-box",
           }}
         >
           {lines.map((line, i) => {
@@ -259,9 +266,9 @@ export default function PageComposer({
                   flexDirection: "row",
                   alignItems: "flex-end",
                   justifyContent: "flex-end",
-                  margin: `${30 * scale}px ${20 * scale}px ${-24 * scale}px 0`,
+                  margin: `0 0 ${-24 * scale}px 0`,
                   minHeight: 96 / 3 * scale,
-                  maxWidth: `calc(100% - ${40 * scale}px)`,
+                  maxWidth: `calc(100% - ${sheetOffsetRight}px)`,
                   cursor: dragIndex === null ? "grab" : "default",
                   userSelect: "none",
                   touchAction: "none",
@@ -289,8 +296,8 @@ export default function PageComposer({
             <div
               style={{
                 position: "absolute",
-                width: `calc(100% - ${40 * scale}px)`,
-                left: `${20 * scale}px`,
+                width: `calc(100% - ${sheetOffsetRight}px)`,
+                left: 0,
                 top:
                   dragY -
                   dragOffsetY -
