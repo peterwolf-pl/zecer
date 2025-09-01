@@ -242,7 +242,6 @@ export default function LetterComposer({ onMoveLineToPage }) {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "#d4d4d4",
         alignItems: "center",
         justifyContent: "stretch",
         overflow: "hidden",
