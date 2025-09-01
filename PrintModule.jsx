@@ -101,14 +101,17 @@ export default function PrintModule({ lines, onBack }) {
                 height: pageH + 800 * scale,
                 objectFit: "cover",
                 pointerEvents: "none",
-                transform: "translateY(20%) scale(0.85)",
-                transformOrigin: "top left"
+                transform: "translateY(15%) scale(0.85)",
+                transformOrigin: "top left",
+                zIndex: 0
               }}
             />
             {lines.map((line, i) => (
               <div
                 key={i}
                 style={{
+                  position: "relative",
+                  zIndex: 1,
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "flex-start",
