@@ -14,7 +14,7 @@
 
   color-scheme: light;
   color: #213547;
-  background-color: #d4d4d4;
+  --bg-tile-size: 64px;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -37,7 +37,9 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #d4d4d4;
+  background-image: url('assets/bg.png');
+  background-repeat: repeat;
+  background-size: var(--bg-tile-size);
 }
 
 h1 {
@@ -67,7 +69,6 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #d4d4d4;
   }
   a:hover {
     color: #747bff;
