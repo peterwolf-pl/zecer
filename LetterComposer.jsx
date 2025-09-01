@@ -3,6 +3,10 @@ import React, { useRef, useState, useEffect } from "react";
 const KASZTA_WIDTH = 1618;
 const KASZTA_HEIGHT = 1080;
 const SLOTS_COUNT = 20;
+const LETTER_HEIGHT = 96;
+const LINE_OFFSET_RIGHT = 340;
+const LINE_OFFSET_BOTTOM = 240;
+const WIERSZOWNIK_SRC = "/assets/wierszownik.jpg";
 
 function getImageWidth(src) {
   return new Promise((resolve) => {
@@ -22,6 +26,13 @@ export default function LetterComposer({ onMoveLineToPage }) {
   const kasztaRef = useRef();
   const wierszownikRef = useRef();
   const [kasztaW, setKasztaW] = useState(KASZTA_WIDTH);
+  const [wierszownikDims, setWierszownikDims] = useState({ width: 1, height: 1 });
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => setWierszownikDims({ width: img.width, height: img.height });
+    img.src = WIERSZOWNIK_SRC;
+  }, []);
 
   // BLOKUJ SCROLL strony
   useEffect(() => {
@@ -157,9 +168,14 @@ export default function LetterComposer({ onMoveLineToPage }) {
   };
 
 
-  const scale = kasztaW / KASZTA_WIDTH;
+  const kasztaScale = kasztaW / KASZTA_WIDTH;
   const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
   const lineW = kasztaW * 0.8; // WIERSZOWNIK 80% kaszty
+  const wierszScale = lineW / wierszownikDims.width;
+  const lineH = wierszownikDims.height * wierszScale;
+  const letterScale = wierszScale * 2;
+  const offsetRight = LINE_OFFSET_RIGHT * wierszScale;
+  const offsetTop = lineH - LINE_OFFSET_BOTTOM * wierszScale - LETTER_HEIGHT * letterScale;
 
   function renderLettersOnLine() {
     let right = 0;
@@ -167,16 +183,16 @@ export default function LetterComposer({ onMoveLineToPage }) {
     for (let i = slots.length - 1; i >= 0; i--) {
       const slot = slots[i];
       if (!slot) continue;
-      right += slot.width * scale;
+      right += slot.width * letterScale;
       visibleSlots.push(
         <div
           key={slot.id}
           style={{
             position: "absolute",
-            left: lineW - right,
-            top: `${16 * scale}px`,
-            width: slot.width * scale,
-            height: 96 * scale,
+            left: lineW - offsetRight - right,
+            top: offsetTop,
+            width: slot.width * letterScale,
+            height: LETTER_HEIGHT * letterScale,
             zIndex: 3,
             cursor: "pointer"
           }}
@@ -186,8 +202,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
           <img
             src={slot.img}
             alt={slot.char}
-            width={slot.width * scale}
-            height={96 * scale}
+            width={slot.width * letterScale}
+            height={LETTER_HEIGHT * letterScale}
             draggable={false}
             style={{ display: "block" }}
           />
@@ -206,10 +222,10 @@ export default function LetterComposer({ onMoveLineToPage }) {
         alt={activeLetter.char}
         style={{
           position: "fixed",
-          left: ghostPos.x - (activeLetter.width * scale) / 2,
-          top: ghostPos.y - (96 * scale),
-          width: activeLetter.width * scale,
-          height: 96 * scale,
+          left: ghostPos.x - (activeLetter.width * letterScale) / 2,
+          top: ghostPos.y - (LETTER_HEIGHT * letterScale) / 2,
+          width: activeLetter.width * letterScale,
+          height: LETTER_HEIGHT * letterScale,
           pointerEvents: "none",
           zIndex: 1000,
           opacity: 1,
@@ -229,7 +245,6 @@ export default function LetterComposer({ onMoveLineToPage }) {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "#f5f6f8",
         alignItems: "center",
         justifyContent: "stretch",
         overflow: "hidden",
@@ -294,10 +309,10 @@ export default function LetterComposer({ onMoveLineToPage }) {
               aria-label="Wybierz czcionkę"
               style={{
                 position: "absolute",
-                left: Math.min(field.x1, field.x2) * scale,
-                top: Math.min(field.y1, field.y2) * scale,
-                width: Math.abs(field.x2 - field.x1) * scale,
-                height: Math.abs(field.y2 - field.y1) * scale,
+                left: Math.min(field.x1, field.x2) * kasztaScale,
+                top: Math.min(field.y1, field.y2) * kasztaScale,
+                width: Math.abs(field.x2 - field.x1) * kasztaScale,
+                height: Math.abs(field.y2 - field.y1) * kasztaScale,
                 border: "0px solid #2563eb",
                 background: "rgba(96,165,250,0.0)",
                 borderRadius: "10px",
@@ -324,37 +339,21 @@ export default function LetterComposer({ onMoveLineToPage }) {
             style={{
               position: "relative",
               width: lineW,
-              minHeight: 116 * scale,
+              height: lineH,
               margin: "1px auto 0px auto",
-              borderRadius: 8 * scale,
-              background: "#a6a3a8",
               touchAction: "none",
               flexShrink: 0,
               boxSizing: "border-box"
             }}
           >
-            <div
+            <img
+              src={WIERSZOWNIK_SRC}
+              alt="Wierszownik"
               style={{
-                position: "absolute",
-                left: -5 * scale,
-                top: 96 * scale + 16 * scale,
-                width: lineW + (10 * scale),
-                height: 8 * scale,
-                background: "#111",
-                borderRadius: 8 * scale,
-                zIndex: 1
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                right: -4 * scale,
-                top: 0,
-                width: 8 * scale,
-                height: 116 * scale + 3,
-                background: "#111",
-                borderRadius: 8 * scale,
-                zIndex: 1
+                width: "100%",
+                height: "100%",
+                display: "block",
+                pointerEvents: "none"
               }}
             />
             {renderLettersOnLine()}

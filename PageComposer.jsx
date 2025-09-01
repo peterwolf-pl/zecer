@@ -2,6 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 
 const A4_WIDTH = 796;
 const A4_HEIGHT = 1123;
+const SHEET_OFFSET_RIGHT = 120;
+const SHEET_OFFSET_TOP = 170;
+const LETTER_SCALE = 2;
+const LETTER_BASE_HEIGHT = 96 / 3;
 
 
 
@@ -17,22 +21,33 @@ export default function PageComposer({
 }) {
   const [pageW, setPageW] = useState(A4_WIDTH);
   const wrapperRef = useRef();
+  const [sheetDims, setSheetDims] = useState({ width: A4_WIDTH, height: A4_HEIGHT });
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/assets/blacha.png";
+    img.onload = () => {
+      setSheetDims({ width: img.width, height: img.height });
+    };
+  }, []);
 
   useEffect(() => {
     function handleResize() {
       const maxW = window.innerWidth * 0.95;
       const stopkaH = 40 + 18;
       const maxH = window.innerHeight - stopkaH - 32;
-      const byHeight = maxH * (A4_WIDTH / A4_HEIGHT);
-      setPageW(Math.min(A4_WIDTH, maxW, byHeight));
+      const byHeight = maxH * (sheetDims.width / sheetDims.height);
+      setPageW(Math.min(sheetDims.width, maxW, byHeight));
     }
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [sheetDims]);
 
-  const scale = pageW / A4_WIDTH;
-  const pageH = pageW * (A4_HEIGHT / A4_WIDTH);
+  const scale = pageW / sheetDims.width;
+  const pageH = pageW * (sheetDims.height / sheetDims.width);
+  const sheetOffsetRight = SHEET_OFFSET_RIGHT * scale;
+  const sheetOffsetTop = SHEET_OFFSET_TOP * scale;
 
   // DRAG
   const [dragIndex, setDragIndex] = useState(null);
@@ -173,7 +188,7 @@ export default function PageComposer({
       return {
         background: "#e3f2ff",
         borderRadius: 4 * scale,
-        minHeight: 32 * scale,
+        minHeight: LETTER_BASE_HEIGHT * LETTER_SCALE * scale,
         outline: "2px dashed #28b0ef",
         transition: "background 0.12s",
       };
@@ -205,7 +220,6 @@ export default function PageComposer({
       style={{
         minHeight: "100vh",
         width: "100vw",
-        background: "#f5f6f8",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -230,8 +244,10 @@ export default function PageComposer({
         <div
           ref={wrapperRef}
           style={{
-            background: "#3a3e41",
-            border: "4px solid #222",
+            backgroundImage: "url(/assets/blacha.png)",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "100% 100%",
             borderRadius: 6 * scale,
             width: pageW,
             height: pageH,
@@ -243,6 +259,9 @@ export default function PageComposer({
             flexDirection: "column",
             alignItems: "flex-end",
             justifyContent: "flex-start",
+            paddingRight: sheetOffsetRight,
+            paddingTop: sheetOffsetTop,
+            boxSizing: "border-box",
           }}
         >
           {lines.map((line, i) => {
@@ -257,9 +276,9 @@ export default function PageComposer({
                   flexDirection: "row",
                   alignItems: "flex-end",
                   justifyContent: "flex-end",
-                  margin: `${30 * scale}px ${20 * scale}px ${-24 * scale}px 0`,
-                  minHeight: 96 / 3 * scale,
-                  maxWidth: `calc(100% - ${40 * scale}px)`,
+                  margin: `0 0 ${8 * scale}px 0`,
+                  minHeight: LETTER_BASE_HEIGHT * LETTER_SCALE * scale,
+                  maxWidth: `calc(100% - ${sheetOffsetRight}px)`,
                   cursor: dragIndex === null ? "grab" : "default",
                   userSelect: "none",
                   touchAction: "none",
@@ -273,8 +292,8 @@ export default function PageComposer({
                     key={j}
                     src={letter.img}
                     alt={letter.char}
-                    width={(letter.width / 3) * scale}
-                    height={(96 / 3) * scale}
+                    width={(letter.width / 3) * scale * LETTER_SCALE}
+                    height={LETTER_BASE_HEIGHT * scale * LETTER_SCALE}
                     style={{ marginLeft: 0, pointerEvents: "none" }}
                     draggable={false}
                   />
@@ -287,8 +306,8 @@ export default function PageComposer({
             <div
               style={{
                 position: "absolute",
-                width: `calc(100% - ${40 * scale}px)`,
-                left: `${20 * scale}px`,
+                width: `calc(100% - ${sheetOffsetRight}px)`,
+                left: 0,
                 top:
                   dragY -
                   dragOffsetY -
@@ -307,8 +326,8 @@ export default function PageComposer({
                   key={j}
                   src={letter.img}
                   alt={letter.char}
-                  width={(letter.width / 3) * scale}
-                  height={(96 / 3) * scale}
+                  width={(letter.width / 3) * scale * LETTER_SCALE}
+                  height={LETTER_BASE_HEIGHT * scale * LETTER_SCALE}
                   style={{ marginLeft: 0, pointerEvents: "none" }}
                   draggable={false}
                 />
