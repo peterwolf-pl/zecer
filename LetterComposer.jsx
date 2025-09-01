@@ -165,6 +165,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
   const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
   const lineW = kasztaW * 0.8; // WIERSZOWNIK 80% kaszty
   const lineScale = wierszownikSize.w ? lineW / wierszownikSize.w : scale;
+  const letterScale = lineScale * 2;
   const lineStartX = wierszownikSize.w
     ? (wierszownikSize.w - LINE_OFFSET_RIGHT) * lineScale
     : 0;
@@ -179,16 +180,16 @@ export default function LetterComposer({ onMoveLineToPage }) {
     for (let i = slots.length - 1; i >= 0; i--) {
       const slot = slots[i];
       if (!slot) continue;
-      right += slot.width * lineScale;
+      right += slot.width * letterScale;
       visibleSlots.push(
         <div
           key={slot.id}
           style={{
             position: "absolute",
             left: lineStartX - right,
-            top: lineStartY - LETTER_HEIGHT * lineScale,
-            width: slot.width * lineScale,
-            height: LETTER_HEIGHT * lineScale,
+            top: lineStartY - LETTER_HEIGHT * letterScale,
+            width: slot.width * letterScale,
+            height: LETTER_HEIGHT * letterScale,
             zIndex: 3,
             cursor: "pointer"
           }}
@@ -198,8 +199,8 @@ export default function LetterComposer({ onMoveLineToPage }) {
           <img
             src={slot.img}
             alt={slot.char}
-            width={slot.width * lineScale}
-            height={LETTER_HEIGHT * lineScale}
+            width={slot.width * letterScale}
+            height={LETTER_HEIGHT * letterScale}
             draggable={false}
             style={{ display: "block" }}
           />
@@ -218,10 +219,10 @@ export default function LetterComposer({ onMoveLineToPage }) {
         alt={activeLetter.char}
         style={{
           position: "fixed",
-          left: ghostPos.x - (activeLetter.width * lineScale) / 2,
-          top: ghostPos.y - (LETTER_HEIGHT * lineScale),
-          width: activeLetter.width * lineScale,
-          height: LETTER_HEIGHT * lineScale,
+          left: ghostPos.x - (activeLetter.width * letterScale) / 2,
+          top: ghostPos.y - (LETTER_HEIGHT * letterScale),
+          width: activeLetter.width * letterScale,
+          height: LETTER_HEIGHT * letterScale,
           pointerEvents: "none",
           zIndex: 1000,
           opacity: 1,
