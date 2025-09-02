@@ -5,6 +5,8 @@ import PrintModule from "./PrintModule";
 import Intro from "./Intro";
 import AdminPanel from "./AdminPanel";
 import LetterFieldGenerator from "./LetterFieldGenerator";
+import pozData from "./poz.json";
+import pozSzufladaData from "./poz_szuflada.json";
 
 export default function App() {
   // Każdy ciąg znaków z wierszownika to tablica liter (obiektów), np. [{char, img, width}]
@@ -13,8 +15,8 @@ export default function App() {
   const [kasztaVariant, setKasztaVariant] = useState("kaszta");
 
   const kasztaSettings = {
-    kaszta: { image: "/assets/kaszta.png", poz: "/poz.json" },
-    szuflada: { image: "/assets/kaszta_szuflada.png",  poz: "/poz_szuflada.json" },
+    kaszta: { image: "/assets/kaszta.png", poz: pozData },
+    szuflada: { image: "/assets/kaszta_szuflada.png", poz: pozSzufladaData },
   };
 
   function handleSelect(variant) {
@@ -56,7 +58,7 @@ export default function App() {
           }}
           onBack={() => setModule("intro")}
           kasztaImage={kasztaSettings[kasztaVariant].image}
-          pozSrc={kasztaSettings[kasztaVariant].poz}
+          pozData={kasztaSettings[kasztaVariant].poz}
         />
       )}
      {module === "page" && (

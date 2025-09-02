@@ -15,7 +15,7 @@ function getImageWidth(src) {
     img.src = src;
   });
 }
-export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage = "/assets/kaszta.png", pozSrc = "/poz.json" }) {
+export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage = "/assets/kaszta.png", pozData = [] }) {
 
   const [letterFields, setLetterFields] = useState([]);
   const [slots, setSlots] = useState(Array(SLOTS_COUNT).fill(null));
@@ -58,11 +58,15 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
   }, []);
 
   useEffect(() => {
-    fetch(pozSrc)
-      .then(res => res.json())
-      .then(setLetterFields)
-      .catch(() => setLetterFields([]));
-  }, [pozSrc]);
+    if (Array.isArray(pozData)) {
+      setLetterFields(pozData);
+    } else {
+      fetch(pozData)
+        .then(res => res.json())
+        .then(setLetterFields)
+        .catch(() => setLetterFields([]));
+    }
+  }, [pozData]);
 
 
   // DRAG START (mouse/touch na field)
