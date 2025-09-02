@@ -16,7 +16,7 @@ function getImageWidth(src) {
   });
 }
 
-export default function LetterComposer({ onMoveLineToPage }) {
+export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage = "/assets/kaszta.png", pozSrc = "/poz.json" }) {
   const [letterFields, setLetterFields] = useState([]);
   const [slots, setSlots] = useState(Array(SLOTS_COUNT).fill(null));
   const [activeLetter, setActiveLetter] = useState(null);
@@ -58,11 +58,11 @@ export default function LetterComposer({ onMoveLineToPage }) {
   }, []);
 
   useEffect(() => {
-    fetch('/poz.json')
+    fetch(pozSrc)
       .then(res => res.json())
       .then(setLetterFields)
       .catch(() => setLetterFields([]));
-  }, []);
+  }, [pozSrc]);
 
 
   // DRAG START (mouse/touch na field)
@@ -165,6 +165,16 @@ export default function LetterComposer({ onMoveLineToPage }) {
     const updatedSlots = [...slots];
     updatedSlots[i] = null;
     setSlots(updatedSlots);
+  };
+
+  const handleBack = () => {
+    setSlots(Array(SLOTS_COUNT).fill(null));
+    setActiveLetter(null);
+    setGhostPos({ x: 0, y: 0, visible: false });
+    setIsDragging(false);
+    if (typeof onBack === "function") {
+      onBack();
+    }
   };
 
 
@@ -292,7 +302,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
             }}
           />
           <img
-            src="/assets/kaszta.png"
+            src={kasztaImage}
             alt="Kaszta zecerska"
             style={{
               width: "100%",
@@ -360,6 +370,49 @@ export default function LetterComposer({ onMoveLineToPage }) {
             />
             {renderLettersOnLine()}
           </div>
+        </div>
+        {/* Panel boczny po LEWEJ */}
+        <div
+          style={{
+            position: "absolute",
+            left: 10,
+            bottom: 70,
+            zIndex: 10,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <button
+            onClick={handleBack}
+            style={{
+              background: "#222",
+              color: "#fff",
+              border: "2px solid #888",
+              borderRadius: "10%",
+              width: 39,
+              height: 39,
+              fontSize: 24,
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: "2px 2px 8px #0002",
+              outline: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            title="Wróć do wyboru kaszty"
+            aria-label="Wróć do wyboru kaszty"
+          >
+            <span
+              style={{
+                display: "inline-block",
+                transform: "translateY(0px)",
+                fontFamily: "Arial, sans-serif",
+              }}
+            >
+              &#8592;
+            </span>
+          </button>
         </div>
         {/* Panel boczny po PRAWEJ */}
         <div
