@@ -27,7 +27,7 @@ export default function PrintModule({ lines, onBack }) {
   const pageH = pageW * (A4_HEIGHT / A4_WIDTH);
 
   useEffect(() => {
-    const t = setTimeout(() => setAnimReady(true), 500);
+    const t = setTimeout(() => setAnimReady(true), 1500);
     return () => clearTimeout(t);
   }, []);
 
@@ -43,7 +43,7 @@ export default function PrintModule({ lines, onBack }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "stretch",
-        overflow: "hidden",
+        overflow: "visible",
         boxSizing: "border-box"
       }}
     >
@@ -56,7 +56,7 @@ export default function PrintModule({ lines, onBack }) {
             justifyContent: "center",
             minHeight: 0,
             width: "100%",
-            overflow: "hidden",
+            overflow: "visible",
             position: "relative",
           }}
         >
@@ -64,7 +64,7 @@ export default function PrintModule({ lines, onBack }) {
           style={{
             display: "flex",
             flexDirection: "row",
-            gap: 48 * scale,
+            gap: 88 * scale,
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
@@ -74,31 +74,51 @@ export default function PrintModule({ lines, onBack }) {
           {/* Kartka A4 LEWA */}
           <div
             style={{
-              background: "#3a3e41",
-              border: "1.5px solid #bbb",
-              borderRadius: 12 * scale,
+              background: "none",
+              border: "none",
+              borderRadius: 0,
               width: pageW,
               height: pageH,
               boxShadow: "0 6px 48px #0003",
               position: "relative",
-              overflow: "hidden",
+              overflow: "visible",
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-end",
-              justifyContent: "flex-start"
+              justifyContent: "flex-start",
+              paddingTop: 200 * scale,
+              paddingRight: 270 * scale
             }}
           >
+            <img
+              src="/assets/korektor.png"
+              alt="korektor"
+              style={{
+                position: "absolute",
+                top: -400 * scale,
+                left: 0,
+                width: "100%",
+                height: pageH + 800 * scale,
+                objectFit: "cover",
+                pointerEvents: "none",
+                transform: "translateY(11.5%) scale(0.85)",
+                transformOrigin: "top left",
+                zIndex: 0
+              }}
+            />
             {lines.map((line, i) => (
               <div
                 key={i}
                 style={{
+                  position: "relative",
+                  zIndex: 1,
                   display: "flex",
                   flexDirection: "row",
-                  alignItems: "flex",
+                  alignItems: "flex-start",
                   justifyContent: "flex-end",
-                  margin: `${0 * scale}px ${20 * scale}px ${12 * scale}px 0`,
+                  margin: `${0 * scale}px 0 ${12 * scale}px 0`,
                   minHeight: 96/3 * scale,
-                  maxWidth: `calc(100% - ${40 * scale}px)`
+                  maxWidth: "100%"
                 }}
               >
                 {line.map((letter, j) => (
@@ -148,7 +168,9 @@ export default function PrintModule({ lines, onBack }) {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start",
-                justifyContent: "flex-start"
+                justifyContent: "flex-start",
+                paddingTop: 80 * scale,
+                paddingLeft: 60 * scale
               }}
             >
               {mirroredLines.map((line, i) => (
@@ -158,12 +180,12 @@ export default function PrintModule({ lines, onBack }) {
                     transform: "scaleX(-1)",
                     display: "flex",
                     flexDirection: "row",
-                    alignItems: "flex",
-                    justifyContent: "flex",
-                    margin: `${0 * scale}px ${20 * scale}px ${12 * scale}px 0`,
+                    alignItems: "flex-start",
+                    justifyContent: "flex-start",
+                    margin: `${0 * scale}px 0 ${12 * scale}px 0`,
                     minHeight: 96/3 * scale,
                     filter: "invert(1)",
-                    maxWidth: `calc(100% - ${40 * scale}px)`
+                    maxWidth: "100%"
                   }}
                 >
                   {[...line].map((letter, j) => (
@@ -259,9 +281,9 @@ export default function PrintModule({ lines, onBack }) {
           onTouchStart={e => (e.target.style.color = "#ff0000")}
           onTouchEnd={e => (e.target.style.color = "#969498")}
         >
-          Muzeum Książki Artystycznej w Łodzi
+         &nbsp; &nbsp;  |    &nbsp; &nbsp;   &nbsp; &nbsp;   MKA Łódź
         </a>
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; produkcja:{" "}
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; code:{" "}
         <a
           href="https://peterwolf.pl"
           target="_blank"
