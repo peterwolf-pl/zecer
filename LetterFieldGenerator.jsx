@@ -11,7 +11,7 @@ const ALFABET = [
 const KASZTA_WIDTH = 1618;
 const KASZTA_HEIGHT = 1080;
 
-export default function LetterFieldGenerator() {
+export default function LetterFieldGenerator({ kasztaImage = "/assets/kaszta.png", onBack }) {
   const [mode, setMode] = useState("male");  // "male" lub "wielkie"
   const [step, setStep] = useState(0);       // 0: pierwszy klik, 1: drugi klik
   const [clicks, setClicks] = useState([]);
@@ -73,6 +73,11 @@ export default function LetterFieldGenerator() {
 
 return (
   <div style={{ maxWidth: 1080 }}>
+    {onBack && (
+      <button onClick={onBack} style={{ marginBottom: 16 }}>
+        Powrót
+      </button>
+    )}
     <div style={{ marginBottom: 16 }}>
       <span className="text-lg">
         Kliknij dwa narożniki pola dla <b>{isMale ? "małej" : "wielkiej"}</b> litery:{" "}
@@ -102,7 +107,7 @@ return (
       onClick={handleKasztaClick}
     >
       <img
-        src="/assets/kaszta.png"
+        src={kasztaImage}
         alt="Kaszta"
         width={KASZTA_WIDTH}
         height={KASZTA_HEIGHT}
