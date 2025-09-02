@@ -25,7 +25,7 @@ export default function PrintModule({ lines, onBack }) {
 
   const scale = pageW / A4_WIDTH;
   const pageH = pageW * (A4_HEIGHT / A4_WIDTH);
-  const clampH = 80 * scale;
+  const clampH = 320 * scale;
   const [clampTop, setClampTop] = useState(pageH - clampH);
 
   useEffect(() => {
