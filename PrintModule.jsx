@@ -25,6 +25,14 @@ export default function PrintModule({ lines, onBack }) {
 
   const scale = pageW / A4_WIDTH;
   const pageH = pageW * (A4_HEIGHT / A4_WIDTH);
+  const clampH = 80 * scale;
+  const [clampTop, setClampTop] = useState(pageH - clampH);
+
+  useEffect(() => {
+    setClampTop(pageH - clampH);
+    const t = setTimeout(() => setClampTop(0), 1000);
+    return () => clearTimeout(t);
+  }, [pageH]);
 
   useEffect(() => {
     const t = setTimeout(() => setAnimReady(true), 1500);
@@ -104,6 +112,19 @@ export default function PrintModule({ lines, onBack }) {
                 transform: "translateY(11.5%) scale(0.85)",
                 transformOrigin: "top left",
                 zIndex: 0
+              }}
+            />
+            <img
+              src="/assets/docisk.png"
+              alt="docisk"
+              style={{
+                position: "absolute",
+                left: `-${230 * scale}px`,
+                top: clampTop,
+                width: `calc(100% + ${300 * scale}px)`,
+                height: `calc(100% * ${scale}px)`,
+                transition: "top 1s ease-in-out",
+                zIndex: 2
               }}
             />
             {lines.map((line, i) => (
