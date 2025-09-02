@@ -16,7 +16,7 @@ function getImageWidth(src) {
   });
 }
 
-export default function LetterComposer({ onMoveLineToPage }) {
+export default function LetterComposer({ onMoveLineToPage, kasztaImage = "/assets/kaszta.png", pozSrc = "/poz.json" }) {
   const [letterFields, setLetterFields] = useState([]);
   const [slots, setSlots] = useState(Array(SLOTS_COUNT).fill(null));
   const [activeLetter, setActiveLetter] = useState(null);
@@ -58,11 +58,11 @@ export default function LetterComposer({ onMoveLineToPage }) {
   }, []);
 
   useEffect(() => {
-    fetch('/poz.json')
+    fetch(pozSrc)
       .then(res => res.json())
       .then(setLetterFields)
       .catch(() => setLetterFields([]));
-  }, []);
+  }, [pozSrc]);
 
 
   // DRAG START (mouse/touch na field)
@@ -292,7 +292,7 @@ export default function LetterComposer({ onMoveLineToPage }) {
             }}
           />
           <img
-            src="/assets/kaszta.png"
+            src={kasztaImage}
             alt="Kaszta zecerska"
             style={{
               width: "100%",
