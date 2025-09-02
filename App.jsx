@@ -3,6 +3,10 @@ import LetterComposer from "./LetterComposer";
 import PageComposer from "./PageComposer";
 import PrintModule from "./PrintModule";
 import Intro from "./Intro";
+import AdminPanel from "./AdminPanel";
+import LetterFieldGenerator from "./LetterFieldGenerator";
+import pozData from "./poz.json";
+import pozSzufladaData from "./poz_szuflada.json";
 
 export default function App() {
   // Każdy ciąg znaków z wierszownika to tablica liter (obiektów), np. [{char, img, width}]
@@ -11,13 +15,22 @@ export default function App() {
   const [kasztaVariant, setKasztaVariant] = useState("kaszta");
 
   const kasztaSettings = {
-    kaszta: { image: "/assets/kaszta.png", poz: "/poz.json" },
-    szuflada: { image: "/assets/kaszta_szuflada.png",  poz: "/poz_szuflada.json" },
+    kaszta: { image: "/assets/kaszta.png", poz: pozData },
+    szuflada: { image: "/assets/kaszta_szuflada.png", poz: pozSzufladaData },
   };
 
   function handleSelect(variant) {
     setKasztaVariant(variant);
     setModule("letter");
+  }
+
+  function handleAdminLogin() {
+    setModule("admin");
+  }
+
+  function handleCalibrate(variant) {
+    setKasztaVariant(variant);
+    setModule("calibrate");
   }
  // const [module, setModule] = useState("page");
 
@@ -35,7 +48,8 @@ export default function App() {
 
   return (
     <>
-      {module === "intro" && <Intro onSelect={handleSelect} />}
+      {module === "intro" && <Intro onSelect={handleSelect} onAdmin={handleAdminLogin} />}
+      {module === "admin" && <AdminPanel onCalibrate={handleCalibrate} />}
       {module === "letter" && (
         <LetterComposer
           onMoveLineToPage={line => {
@@ -44,7 +58,7 @@ export default function App() {
           }}
           onBack={() => setModule("intro")}
           kasztaImage={kasztaSettings[kasztaVariant].image}
-          pozSrc={kasztaSettings[kasztaVariant].poz}
+          pozData={kasztaSettings[kasztaVariant].poz}
         />
       )}
      {module === "page" && (
@@ -58,11 +72,17 @@ export default function App() {
 )}
 
       {module === "print" && (
-  <PrintModule
-    lines={lines}
-    onBack={() => setModule("page")}
-  />
-)}
+        <PrintModule
+          lines={lines}
+          onBack={() => setModule("page")}
+        />
+      )}
+      {module === "calibrate" && (
+        <LetterFieldGenerator
+          kasztaImage={kasztaSettings[kasztaVariant].image}
+          onBack={() => setModule("admin")}
+        />
+      )}
 
     </>
   );
