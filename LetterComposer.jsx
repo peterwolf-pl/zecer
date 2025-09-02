@@ -7,6 +7,7 @@ const LETTER_HEIGHT = 96;
 const LINE_OFFSET_RIGHT = 340;
 const LINE_OFFSET_BOTTOM = 240;
 const WIERSZOWNIK_SRC = "/assets/wierszownik.jpg";
+const SECRET_SEQUENCE = ["o", "spacja", "o", "o", "spacja", "spacja", "o", "o", "o"];
 
 function getImageWidth(src) {
   return new Promise((resolve) => {
@@ -28,6 +29,17 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
   const [kasztaW, setKasztaW] = useState(BASE_KASZTA_WIDTH);
   const [kasztaBase, setKasztaBase] = useState({ width: BASE_KASZTA_WIDTH, height: BASE_KASZTA_HEIGHT });
   const [wierszownikDims, setWierszownikDims] = useState({ width: 1, height: 1 });
+
+  useEffect(() => {
+    const current = slots.filter(Boolean).map(s => s.char);
+    if (
+      current.length === SECRET_SEQUENCE.length &&
+      current.every((c, i) => c === SECRET_SEQUENCE[i])
+    ) {
+      const audio = new Audio("1.mp3");
+      audio.play();
+    }
+  }, [slots]);
 
   useEffect(() => {
     const img = new window.Image();
