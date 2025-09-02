@@ -18,6 +18,9 @@ export default function LetterFieldGenerator({ kasztaImage = "/assets/kaszta.png
   const [literaIdx, setLiteraIdx] = useState(0);
   const kasztaRef = useRef();
   const [kasztaSize, setKasztaSize] = useState(DEFAULT_KASZTA);
+  const rect = kasztaRef.current?.getBoundingClientRect();
+  const dispScaleX = rect ? rect.width / kasztaSize.width : 1;
+  const dispScaleY = rect ? rect.height / kasztaSize.height : 1;
 
   useEffect(() => {
     const img = new window.Image();
@@ -35,8 +38,10 @@ export default function LetterFieldGenerator({ kasztaImage = "/assets/kaszta.png
 
   function handleKasztaClick(e) {
     const rect = kasztaRef.current.getBoundingClientRect();
-    const x = Math.round(e.clientX - rect.left);
-    const y = Math.round(e.clientY - rect.top);
+    const scaleX = kasztaSize.width / rect.width;
+    const scaleY = kasztaSize.height / rect.height;
+    const x = Math.round((e.clientX - rect.left) * scaleX);
+    const y = Math.round((e.clientY - rect.top) * scaleY);
 
     if (step === 0) {
       setClicks([{ x, y }]);
@@ -78,7 +83,7 @@ export default function LetterFieldGenerator({ kasztaImage = "/assets/kaszta.png
   }
 
 return (
-  <div style={{ maxWidth: kasztaSize.width }}>
+  <div style={{ width: "100%", maxWidth: kasztaSize.width }}>
     {onBack && (
       <button onClick={onBack} style={{ marginBottom: 16 }}>
         Powrót
@@ -102,8 +107,8 @@ return (
         ref={kasztaRef}
         style={{
           position: "relative",
-          width: kasztaSize.width,
-          height: kasztaSize.height,
+          width: "100%",
+          maxWidth: kasztaSize.width,
           border: "2px solid #bbb",
           borderRadius: 8,
           cursor: "crosshair",
@@ -115,8 +120,6 @@ return (
         <img
           src={kasztaImage}
           alt="Kaszta"
-          width={kasztaSize.width}
-          height={kasztaSize.height}
           style={{ width: "100%", height: "auto", display: "block", pointerEvents: "none" }}
         />
       {/* Podgląd aktualnie zaznaczanego prostokąta */}
@@ -124,29 +127,30 @@ return (
         <div
           style={{
             position: "absolute",
-            left: clicks[0].x - 2,
-            top: clicks[0].y - 2,
+            left: clicks[0].x * dispScaleX - 2,
+            top: clicks[0].y * dispScaleY - 2,
             width: 4,
             height: 4,
             background: "#f59e42",
             borderRadius: "50%",
-            zIndex: 5
+            zIndex: 5,
           }}
         />
       )}
       {/* Prostokąty wszystkich pól */}
       {fields.map((f, idx) => (
-        <div key={idx}
+        <div
+          key={idx}
           style={{
             position: "absolute",
-            left: Math.min(f.x1, f.x2),
-            top: Math.min(f.y1, f.y2),
-            width: Math.abs(f.x2 - f.x1),
-            height: Math.abs(f.y2 - f.y1),
+            left: Math.min(f.x1, f.x2) * dispScaleX,
+            top: Math.min(f.y1, f.y2) * dispScaleY,
+            width: Math.abs(f.x2 - f.x1) * dispScaleX,
+            height: Math.abs(f.y2 - f.y1) * dispScaleY,
             border: "2px solid #2563eb",
             background: "rgba(96,165,250,0.13)",
             zIndex: 4,
-            pointerEvents: "none"
+            pointerEvents: "none",
           }}
         >
           <span
@@ -159,9 +163,11 @@ return (
               fontWeight: "bold",
               background: "rgba(255,255,255,0.82)",
               borderRadius: 4,
-              padding: "0 3px"
+              padding: "0 3px",
             }}
-          >{f.char}</span>
+          >
+            {f.char}
+          </span>
         </div>
       ))}
     </div>
