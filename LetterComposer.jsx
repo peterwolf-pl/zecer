@@ -167,6 +167,16 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
     setSlots(updatedSlots);
   };
 
+  const handleBack = () => {
+    setSlots(Array(SLOTS_COUNT).fill(null));
+    setActiveLetter(null);
+    setGhostPos({ x: 0, y: 0, visible: false });
+    setIsDragging(false);
+    if (typeof onBack === "function") {
+      onBack();
+    }
+  };
+
 
   const kasztaScale = kasztaW / KASZTA_WIDTH;
   const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
@@ -373,7 +383,7 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
           }}
         >
           <button
-            onClick={() => typeof onBack === "function" && onBack()}
+            onClick={handleBack}
             style={{
               background: "#222",
               color: "#fff",
