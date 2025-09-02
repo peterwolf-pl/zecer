@@ -30,7 +30,7 @@ export default function PrintModule({ lines, onBack }) {
 
   useEffect(() => {
     setClampTop(pageH - clampH);
-    const t = setTimeout(() => setClampTop(0), 1000);
+    const t = setTimeout(() => setClampTop(-clampH), 1000);
     return () => clearTimeout(t);
   }, [pageH]);
 
