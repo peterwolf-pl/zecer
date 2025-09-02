@@ -87,7 +87,7 @@ export default function PrintModule({ lines, onBack }) {
               alignItems: "flex-end",
               justifyContent: "flex-start",
               paddingTop: 400 * scale,
-              paddingRight: 180 * scale
+              paddingRight: 200 * scale
             }}
           >
             <img
@@ -101,7 +101,7 @@ export default function PrintModule({ lines, onBack }) {
                 height: pageH + 800 * scale,
                 objectFit: "cover",
                 pointerEvents: "none",
-                transform: "translateY(15%) scale(0.85)",
+                transform: "translateY(17.5%) scale(0.85)",
                 transformOrigin: "top left",
                 zIndex: 0
               }}
@@ -170,7 +170,7 @@ export default function PrintModule({ lines, onBack }) {
                 alignItems: "flex-start",
                 justifyContent: "flex-start",
                 paddingTop: 400 * scale,
-                paddingLeft: 180 * scale
+                paddingLeft: 200 * scale
               }}
             >
               {mirroredLines.map((line, i) => (
