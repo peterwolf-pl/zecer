@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 
-const KASZTA_WIDTH = 1618;
-const KASZTA_HEIGHT = 1080;
+const BASE_KASZTA_WIDTH = 1618;
+const BASE_KASZTA_HEIGHT = 1080;
 const SLOTS_COUNT = 20;
 const LETTER_HEIGHT = 96;
 const LINE_OFFSET_RIGHT = 340;
@@ -25,7 +25,8 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
   const [pickupAnim, setPickupAnim] = useState(false);
   const kasztaRef = useRef();
   const wierszownikRef = useRef();
-  const [kasztaW, setKasztaW] = useState(KASZTA_WIDTH);
+  const [kasztaW, setKasztaW] = useState(BASE_KASZTA_WIDTH);
+  const [kasztaBase, setKasztaBase] = useState({ width: BASE_KASZTA_WIDTH, height: BASE_KASZTA_HEIGHT });
   const [wierszownikDims, setWierszownikDims] = useState({ width: 1, height: 1 });
 
   useEffect(() => {
@@ -49,24 +50,43 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
       const wierszownikMinH = 140;
       const gap = 16 + 16;
       const maxH = window.innerHeight - footerH - wierszownikMinH - gap;
-      const kasztaWbyH = maxH * (KASZTA_WIDTH / KASZTA_HEIGHT);
-      setKasztaW(Math.min(KASZTA_WIDTH, vw, kasztaWbyH));
+      const kasztaWbyH = maxH * (kasztaBase.width / kasztaBase.height);
+      setKasztaW(Math.min(kasztaBase.width, vw, kasztaWbyH));
     }
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [kasztaBase]);
+
+  // Odczytaj naturalne wymiary kaszty
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => setKasztaBase({ width: img.width, height: img.height });
+    img.src = kasztaImage;
+  }, [kasztaImage]);
+
+  function scaleFields(data) {
+    const scaleX = kasztaBase.width / BASE_KASZTA_WIDTH;
+    const scaleY = kasztaBase.height / BASE_KASZTA_HEIGHT;
+    return data.map(f => ({
+      ...f,
+      x1: f.x1 * scaleX,
+      x2: f.x2 * scaleX,
+      y1: f.y1 * scaleY,
+      y2: f.y2 * scaleY,
+    }));
+  }
 
   useEffect(() => {
     if (Array.isArray(pozData)) {
-      setLetterFields(pozData);
+      setLetterFields(scaleFields(pozData));
     } else {
       fetch(pozData)
         .then(res => res.json())
-        .then(setLetterFields)
+        .then(data => setLetterFields(scaleFields(data)))
         .catch(() => setLetterFields([]));
     }
-  }, [pozData]);
+  }, [pozData, kasztaBase]);
 
 
   // DRAG START (mouse/touch na field)
@@ -180,8 +200,8 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
     }
   };
 
-  const kasztaScale = kasztaW / KASZTA_WIDTH;
-  const kasztaH = kasztaW * (KASZTA_HEIGHT / KASZTA_WIDTH);
+  const kasztaScale = kasztaW / kasztaBase.width;
+  const kasztaH = kasztaW * (kasztaBase.height / kasztaBase.width);
   const lineW = kasztaW * 0.8; // WIERSZOWNIK 80% kaszty
   const wierszScale = lineW / wierszownikDims.width;
   const lineH = wierszownikDims.height * wierszScale;

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 // Edytuj tu swój alfabet, polskie litery wpisz na końcu jeśli chcesz
 const ALFABET = [
@@ -8,8 +8,7 @@ const ALFABET = [
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ",", "spacja"
 ];
 
-const KASZTA_WIDTH = 1618;
-const KASZTA_HEIGHT = 1080;
+const DEFAULT_KASZTA = { width: 1618, height: 1080 };
 
 export default function LetterFieldGenerator({ kasztaImage = "/assets/kaszta.png", onBack }) {
   const [mode, setMode] = useState("male");  // "male" lub "wielkie"
@@ -18,6 +17,13 @@ export default function LetterFieldGenerator({ kasztaImage = "/assets/kaszta.png
   const [fields, setFields] = useState([]);
   const [literaIdx, setLiteraIdx] = useState(0);
   const kasztaRef = useRef();
+  const [kasztaSize, setKasztaSize] = useState(DEFAULT_KASZTA);
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => setKasztaSize({ width: img.width, height: img.height });
+    img.src = kasztaImage;
+  }, [kasztaImage]);
 
   // Ustal bieżącą literę (mała/wielka)
   const isMale = mode === "male";
@@ -72,7 +78,7 @@ export default function LetterFieldGenerator({ kasztaImage = "/assets/kaszta.png
   }
 
 return (
-  <div style={{ maxWidth: 1080 }}>
+  <div style={{ maxWidth: kasztaSize.width }}>
     {onBack && (
       <button onClick={onBack} style={{ marginBottom: 16 }}>
         Powrót
@@ -92,27 +98,27 @@ return (
         </span>
       )}
     </div>
-    <div
-      ref={kasztaRef}
-      style={{
-        position: "relative",
-        width: KASZTA_WIDTH,
-        height: KASZTA_HEIGHT,
-        border: "2px solid #bbb",
-        borderRadius: 8,
-        cursor: "crosshair",
-        marginBottom: 24,
-        background: "#fff"
-      }}
-      onClick={handleKasztaClick}
-    >
-      <img
-        src={kasztaImage}
-        alt="Kaszta"
-        width={KASZTA_WIDTH}
-        height={KASZTA_HEIGHT}
-        style={{ width: "100%", height: "auto", display: "block", pointerEvents: "none" }}
-      />
+      <div
+        ref={kasztaRef}
+        style={{
+          position: "relative",
+          width: kasztaSize.width,
+          height: kasztaSize.height,
+          border: "2px solid #bbb",
+          borderRadius: 8,
+          cursor: "crosshair",
+          marginBottom: 24,
+          background: "#fff"
+        }}
+        onClick={handleKasztaClick}
+      >
+        <img
+          src={kasztaImage}
+          alt="Kaszta"
+          width={kasztaSize.width}
+          height={kasztaSize.height}
+          style={{ width: "100%", height: "auto", display: "block", pointerEvents: "none" }}
+        />
       {/* Podgląd aktualnie zaznaczanego prostokąta */}
       {step === 1 && clicks.length === 1 && (
         <div
