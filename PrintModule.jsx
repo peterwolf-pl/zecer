@@ -7,6 +7,7 @@ export default function PrintModule({ lines, onBack }) {
   const [pageW, setPageW] = useState(A4_WIDTH);
   const [animReady, setAnimReady] = useState(false);
   const [paperOver, setPaperOver] = useState(false);
+  const [paperShift, setPaperShift] = useState(false);
 
   // Dynamiczne skalowanie dwóch kartek w oknie
   useEffect(() => {
@@ -31,11 +32,16 @@ export default function PrintModule({ lines, onBack }) {
 
   useEffect(() => {
     setClampTop(pageH - clampH);
-    const movePaper = setTimeout(() => setPaperOver(true), 200);
+    let shift;
+    const movePaper = setTimeout(() => {
+      setPaperOver(true);
+      shift = setTimeout(() => setPaperShift(true), 1000);
+    }, 200);
     const clampMove = setTimeout(() => setClampTop(-clampH), 1200);
     const flipPaper = setTimeout(() => setAnimReady(true), 2400);
     return () => {
       clearTimeout(movePaper);
+      clearTimeout(shift);
       clearTimeout(clampMove);
       clearTimeout(flipPaper);
     };
@@ -43,7 +49,10 @@ export default function PrintModule({ lines, onBack }) {
 
   useEffect(() => {
     if (animReady) {
-      const t = setTimeout(() => setPaperOver(false), 1000);
+      const t = setTimeout(() => {
+        setPaperOver(false);
+        setPaperShift(false);
+      }, 1000);
       return () => clearTimeout(t);
     }
   }, [animReady]);
@@ -181,9 +190,9 @@ export default function PrintModule({ lines, onBack }) {
               alignItems: "flex-start",
               justifyContent: "flex-start",
               transform: paperOver
-                ? `translateX(-${pageW + 48 * scale}px) rotateX(180deg)`
+                ? `translateX(-${pageW + 48 * scale + (paperShift ? 100 * scale : 0)}px) rotateX(180deg)`
                 : "translateX(0) rotateX(0deg)",
-              "--dx": `${pageW + 48 * scale}px`,
+              "--dx": `${pageW + 48 * scale + (paperShift ? 100 * scale : 0)}px`,
               transition: !animReady ? "transform 1s ease-in-out" : undefined,
               animation: animReady ? "right-page-flip 1s ease forwards" : "none",
               zIndex: paperOver ? 2 : 1,
