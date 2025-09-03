@@ -187,52 +187,51 @@ export default function PrintModule({ lines, onBack }) {
               transition: !animReady ? "transform 1s ease-in-out" : undefined,
               animation: animReady ? "right-page-flip 1s ease forwards" : "none",
               zIndex: paperOver ? 2 : 1,
-              transformStyle: "preserve-3d",
-              backfaceVisibility: "hidden"
+              transformStyle: "preserve-3d"
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                justifyContent: "flex-start",
-                paddingTop: 80 * scale,
-                paddingLeft: 60 * scale
-              }}
-            >
-              {mirroredLines.map((line, i) => (
-                <div
-                  key={i}
-                  style={{
-                    transform: "scaleX(-1)",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-start",
-                    justifyContent: "flex-start",
-                    margin: `${0 * scale}px 0 ${12 * scale}px 0`,
-                    minHeight: 96/3 * scale,
-                    filter: "invert(1)",
-                    maxWidth: "100%"
-                  }}
-                >
-                  {[...line].map((letter, j) => (
-                    <img
-                      key={j}
-                      src={letter.img}
-                      alt={letter.char}
-                      width={letter.width/3 * scale}
-                      height={96/3 * scale}
-                    // style={{ filter: invert(1), }} 
-                      draggable={false}
-
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
+            {(!paperOver || animReady) && (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
+                  paddingTop: 80 * scale,
+                  paddingLeft: 60 * scale
+                }}
+              >
+                {mirroredLines.map((line, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      transform: "scaleX(-1)",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      justifyContent: "flex-start",
+                      margin: `${0 * scale}px 0 ${12 * scale}px 0`,
+                      minHeight: 96/3 * scale,
+                      filter: "invert(1)",
+                      maxWidth: "100%"
+                    }}
+                  >
+                    {[...line].map((letter, j) => (
+                      <img
+                        key={j}
+                        src={letter.img}
+                        alt={letter.char}
+                        width={letter.width/3 * scale}
+                        height={96/3 * scale}
+                        draggable={false}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {/* Panel boczny (lewy) */}
