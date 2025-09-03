@@ -133,7 +133,7 @@ export default function PrintModule({ lines, onBack }) {
                 width: `calc(100% + ${300 * scale}px)`,
                 height: `calc(100% * ${scale}px)`,
                 transition: "top 1s ease-in-out",
-                zIndex: 2
+                zIndex: 3
               }}
             />
             {lines.map((line, i) => (
@@ -186,7 +186,7 @@ export default function PrintModule({ lines, onBack }) {
               "--dx": `${pageW + 48 * scale}px`,
               transition: !animReady ? "transform 1s ease-in-out" : undefined,
               animation: animReady ? "right-page-flip 1s ease forwards" : "none",
-              zIndex: 3,
+              zIndex: paperOver ? 2 : 1,
               transformStyle: "preserve-3d",
               backfaceVisibility: "hidden"
             }}
