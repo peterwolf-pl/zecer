@@ -6,6 +6,8 @@ const A4_HEIGHT = 1123;
 export default function PrintModule({ lines, onBack }) {
   const [pageW, setPageW] = useState(A4_WIDTH);
   const [animReady, setAnimReady] = useState(false);
+  const [paperOver, setPaperOver] = useState(false);
+  const [paperShift, setPaperShift] = useState(false);
 
   // Dynamiczne skalowanie dwóch kartek w oknie
   useEffect(() => {
@@ -30,14 +32,30 @@ export default function PrintModule({ lines, onBack }) {
 
   useEffect(() => {
     setClampTop(pageH - clampH);
-    const t = setTimeout(() => setClampTop(-clampH), 1000);
-    return () => clearTimeout(t);
-  }, [pageH]);
+    let shift;
+    const movePaper = setTimeout(() => {
+      setPaperOver(true);
+      shift = setTimeout(() => setPaperShift(true), 1000);
+    }, 200);
+    const clampMove = setTimeout(() => setClampTop(-clampH), 1200);
+    const flipPaper = setTimeout(() => setAnimReady(true), 2400);
+    return () => {
+      clearTimeout(movePaper);
+      clearTimeout(shift);
+      clearTimeout(clampMove);
+      clearTimeout(flipPaper);
+    };
+  }, [pageH, clampH]);
 
   useEffect(() => {
-    const t = setTimeout(() => setAnimReady(true), 1500);
-    return () => clearTimeout(t);
-  }, []);
+    if (animReady) {
+      const t = setTimeout(() => {
+        setPaperOver(false);
+        setPaperShift(false);
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+  }, [animReady]);
 
   // Lustrzane odbicie: linie od dołu, każda linia od końca i flipped poziomo
   const mirroredLines = [...lines];
@@ -124,7 +142,7 @@ export default function PrintModule({ lines, onBack }) {
                 width: `calc(100% + ${300 * scale}px)`,
                 height: `calc(100% * ${scale}px)`,
                 transition: "top 1s ease-in-out",
-                zIndex: 2
+                zIndex: 3
               }}
             />
             {lines.map((line, i) => (
@@ -171,59 +189,58 @@ export default function PrintModule({ lines, onBack }) {
               flexDirection: "column",
               alignItems: "flex-start",
               justifyContent: "flex-start",
-              transform: animReady
-                ? "translateX(0) rotateX(0deg)"
-                : `translateX(-${pageW + 48 * scale}px) rotateX(180deg)`,
-              "--dx": `${pageW + 48 * scale}px`,
-              animation: animReady
-                ? "right-page-flip 1s ease forwards"
-                : "none",
-              transformStyle: "preserve-3d",
-              backfaceVisibility: "hidden"
+              transform: paperOver
+                ? `translateX(-${pageW + 48 * scale + (paperShift ? 100 * scale : 0)}px) rotateX(180deg)`
+                : "translateX(0) rotateX(0deg)",
+              "--dx": `${pageW + 48 * scale + (paperShift ? 100 * scale : 0)}px`,
+              transition: !animReady ? "transform 1s ease-in-out" : undefined,
+              animation: animReady ? "right-page-flip 1s ease forwards" : "none",
+              zIndex: paperOver ? 2 : 1,
+              transformStyle: "preserve-3d"
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                justifyContent: "flex-start",
-                paddingTop: 80 * scale,
-                paddingLeft: 60 * scale
-              }}
-            >
-              {mirroredLines.map((line, i) => (
-                <div
-                  key={i}
-                  style={{
-                    transform: "scaleX(-1)",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-start",
-                    justifyContent: "flex-start",
-                    margin: `${0 * scale}px 0 ${12 * scale}px 0`,
-                    minHeight: 96/3 * scale,
-                    filter: "invert(1)",
-                    maxWidth: "100%"
-                  }}
-                >
-                  {[...line].map((letter, j) => (
-                    <img
-                      key={j}
-                      src={letter.img}
-                      alt={letter.char}
-                      width={letter.width/3 * scale}
-                      height={96/3 * scale}
-                    // style={{ filter: invert(1), }} 
-                      draggable={false}
-
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
+            {animReady && !paperOver && (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
+                  paddingTop: 80 * scale,
+                  paddingLeft: 60 * scale
+                }}
+              >
+                {mirroredLines.map((line, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      transform: "scaleX(-1)",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      justifyContent: "flex-start",
+                      margin: `${0 * scale}px 0 ${12 * scale}px 0`,
+                      minHeight: 96/3 * scale,
+                      filter: "invert(1)",
+                      maxWidth: "100%"
+                    }}
+                  >
+                    {[...line].map((letter, j) => (
+                      <img
+                        key={j}
+                        src={letter.img}
+                        alt={letter.char}
+                        width={letter.width/3 * scale}
+                        height={96/3 * scale}
+                        draggable={false}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {/* Panel boczny (lewy) */}
