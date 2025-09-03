@@ -190,7 +190,7 @@ export default function PrintModule({ lines, onBack }) {
               transformStyle: "preserve-3d"
             }}
           >
-            {(!paperOver || animReady) && (
+            {animReady && !paperOver && (
               <div
                 style={{
                   width: "100%",
