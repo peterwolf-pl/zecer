@@ -6,6 +6,7 @@ const A4_HEIGHT = 1123;
 export default function PrintModule({ lines, onBack }) {
   const [pageW, setPageW] = useState(A4_WIDTH);
   const [animReady, setAnimReady] = useState(false);
+  const [paperOver, setPaperOver] = useState(false);
 
   // Dynamiczne skalowanie dwóch kartek w oknie
   useEffect(() => {
@@ -30,14 +31,22 @@ export default function PrintModule({ lines, onBack }) {
 
   useEffect(() => {
     setClampTop(pageH - clampH);
-    const t = setTimeout(() => setClampTop(-clampH), 1000);
-    return () => clearTimeout(t);
-  }, [pageH]);
+    const movePaper = setTimeout(() => setPaperOver(true), 200);
+    const clampMove = setTimeout(() => setClampTop(-clampH), 1200);
+    const flipPaper = setTimeout(() => setAnimReady(true), 2400);
+    return () => {
+      clearTimeout(movePaper);
+      clearTimeout(clampMove);
+      clearTimeout(flipPaper);
+    };
+  }, [pageH, clampH]);
 
   useEffect(() => {
-    const t = setTimeout(() => setAnimReady(true), 1500);
-    return () => clearTimeout(t);
-  }, []);
+    if (animReady) {
+      const t = setTimeout(() => setPaperOver(false), 1000);
+      return () => clearTimeout(t);
+    }
+  }, [animReady]);
 
   // Lustrzane odbicie: linie od dołu, każda linia od końca i flipped poziomo
   const mirroredLines = [...lines];
@@ -171,13 +180,13 @@ export default function PrintModule({ lines, onBack }) {
               flexDirection: "column",
               alignItems: "flex-start",
               justifyContent: "flex-start",
-              transform: animReady
-                ? "translateX(0) rotateX(0deg)"
-                : `translateX(-${pageW + 48 * scale}px) rotateX(180deg)`,
+              transform: paperOver
+                ? `translateX(-${pageW + 48 * scale}px) rotateX(180deg)`
+                : "translateX(0) rotateX(0deg)",
               "--dx": `${pageW + 48 * scale}px`,
-              animation: animReady
-                ? "right-page-flip 1s ease forwards"
-                : "none",
+              transition: !animReady ? "transform 1s ease-in-out" : undefined,
+              animation: animReady ? "right-page-flip 1s ease forwards" : "none",
+              zIndex: 3,
               transformStyle: "preserve-3d",
               backfaceVisibility: "hidden"
             }}
