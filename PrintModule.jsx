@@ -3,10 +3,13 @@ import React, { useEffect, useState } from "react";
 const A4_WIDTH = 796;
 const A4_HEIGHT = 1123;
 const BASE_LETTER_HEIGHT = 96;
+const LETTER_SCALE = 0.5;
 
 const getLineHeight = (line) => {
   if (!line || line.length === 0) return BASE_LETTER_HEIGHT;
-  return Math.max(...line.map((l) => l.height || BASE_LETTER_HEIGHT));
+  return Math.max(
+    ...line.map((l) => (l.height ? l.height * LETTER_SCALE : BASE_LETTER_HEIGHT))
+  );
 };
 
 export default function PrintModule({ lines, onBack }) {
@@ -155,8 +158,12 @@ export default function PrintModule({ lines, onBack }) {
                       key={j}
                       src={letter.img}
                       alt={letter.char}
-                      width={letter.width * scale}
-                      height={(letter.height || BASE_LETTER_HEIGHT) * scale}
+                      width={letter.width * LETTER_SCALE * scale}
+                      height={
+                        (letter.height
+                          ? letter.height * LETTER_SCALE
+                          : BASE_LETTER_HEIGHT) * scale
+                      }
                       style={{ marginLeft: 0 * scale }}
                       draggable={false}
                     />
@@ -225,8 +232,12 @@ export default function PrintModule({ lines, onBack }) {
                         key={j}
                         src={letter.img}
                         alt={letter.char}
-                        width={letter.width * scale}
-                        height={(letter.height || BASE_LETTER_HEIGHT) * scale}
+                        width={letter.width * LETTER_SCALE * scale}
+                        height={
+                          (letter.height
+                            ? letter.height * LETTER_SCALE
+                            : BASE_LETTER_HEIGHT) * scale
+                        }
                         draggable={false}
                       />
                     ))}
