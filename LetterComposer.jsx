@@ -3,15 +3,14 @@ import React, { useRef, useState, useEffect } from "react";
 const KASZTA_WIDTH = 1618;
 const KASZTA_HEIGHT = 1080;
 const SLOTS_COUNT = 20;
-const LETTER_HEIGHT = 96;
 const LINE_OFFSET_RIGHT = 340;
 const LINE_OFFSET_BOTTOM = 240;
 const WIERSZOWNIK_SRC = "/assets/wierszownik.jpg";
 
-function getImageWidth(src) {
+function getImageSize(src) {
   return new Promise((resolve) => {
     const img = new window.Image();
-    img.onload = () => resolve(img.width);
+    img.onload = () => resolve({ width: img.width, height: img.height });
     img.src = src;
   });
 }
@@ -68,8 +67,8 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
   // DRAG START (mouse/touch na field)
   const handleFieldDragStart = async (field, e) => {
     e.preventDefault();
-    const width = await getImageWidth(field.img);
-    setActiveLetter({ ...field, width });
+    const { width, height } = await getImageSize(field.img);
+    setActiveLetter({ ...field, width, height });
     setPickupAnim(true);
     setTimeout(() => setPickupAnim(false), 300);
     let x = 0, y = 0;
@@ -181,26 +180,28 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
   const lineW = kasztaW * 0.8; // WIERSZOWNIK 80% kaszty
   const wierszScale = lineW / wierszownikDims.width;
   const lineH = wierszownikDims.height * wierszScale;
-  const letterScale = wierszScale * 2;
+  const letterScale = wierszScale;
   const offsetRight = LINE_OFFSET_RIGHT * wierszScale;
-  const offsetTop = lineH - LINE_OFFSET_BOTTOM * wierszScale - LETTER_HEIGHT * letterScale;
+  const baseline = lineH - LINE_OFFSET_BOTTOM * wierszScale;
 
   function renderLettersOnLine() {
     let right = 0;
-    let visibleSlots = [];
+    const visibleSlots = [];
     for (let i = slots.length - 1; i >= 0; i--) {
       const slot = slots[i];
       if (!slot) continue;
-      right += slot.width * letterScale;
+      const w = slot.width * letterScale;
+      const h = (slot.height || 96) * letterScale;
+      right += w;
       visibleSlots.push(
         <div
           key={slot.id}
           style={{
             position: "absolute",
             left: lineW - offsetRight - right,
-            top: offsetTop,
-            width: slot.width * letterScale,
-            height: LETTER_HEIGHT * letterScale,
+            top: baseline - h,
+            width: w,
+            height: h,
             zIndex: 3,
             cursor: "pointer"
           }}
@@ -210,8 +211,8 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
           <img
             src={slot.img}
             alt={slot.char}
-            width={slot.width * letterScale}
-            height={LETTER_HEIGHT * letterScale}
+            width={w}
+            height={h}
             draggable={false}
             style={{ display: "block" }}
           />
@@ -231,9 +232,9 @@ export default function LetterComposer({ onMoveLineToPage, onBack, kasztaImage =
         style={{
           position: "fixed",
           left: ghostPos.x - (activeLetter.width * letterScale) / 2,
-          top: ghostPos.y - (LETTER_HEIGHT * letterScale) / 2,
+          top: ghostPos.y - ((activeLetter.height || 96) * letterScale) / 2,
           width: activeLetter.width * letterScale,
-          height: LETTER_HEIGHT * letterScale,
+          height: (activeLetter.height || 96) * letterScale,
           pointerEvents: "none",
           zIndex: 1000,
           opacity: 1,

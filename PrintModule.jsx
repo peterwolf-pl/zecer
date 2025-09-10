@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 
 const A4_WIDTH = 796;
 const A4_HEIGHT = 1123;
+const BASE_LETTER_HEIGHT = 96;
+
+const getLineHeight = (line) => {
+  if (!line || line.length === 0) return BASE_LETTER_HEIGHT;
+  return Math.max(...line.map((l) => l.height || BASE_LETTER_HEIGHT));
+};
 
 export default function PrintModule({ lines, onBack }) {
   const [pageW, setPageW] = useState(A4_WIDTH);
@@ -127,34 +133,37 @@ export default function PrintModule({ lines, onBack }) {
                 zIndex: 2
               }}
             />
-            {lines.map((line, i) => (
-              <div
-                key={i}
-                style={{
-                  position: "relative",
-                  zIndex: 1,
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "flex-start",
-                  justifyContent: "flex-end",
-                  margin: `${0 * scale}px 0 ${12 * scale}px 0`,
-                  minHeight: 96/3 * scale,
-                  maxWidth: "100%"
-                }}
-              >
-                {line.map((letter, j) => (
-                  <img
-                    key={j}
-                    src={letter.img}
-                    alt={letter.char}
-                    width={letter.width/3 * scale}
-                    height={96/3 * scale}
-                    style={{ marginLeft: 0 * scale }}
-                    draggable={false}
-                  />
-                ))}
-              </div>
-            ))}
+            {lines.map((line, i) => {
+              const lineHeight = getLineHeight(line);
+              return (
+                <div
+                  key={i}
+                  style={{
+                    position: "relative",
+                    zIndex: 1,
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "flex-start",
+                    justifyContent: "flex-end",
+                    margin: `${0 * scale}px 0 ${12 * scale}px 0`,
+                    minHeight: lineHeight * scale,
+                    maxWidth: "100%"
+                  }}
+                >
+                  {line.map((letter, j) => (
+                    <img
+                      key={j}
+                      src={letter.img}
+                      alt={letter.char}
+                      width={letter.width * scale}
+                      height={(letter.height || BASE_LETTER_HEIGHT) * scale}
+                      style={{ marginLeft: 0 * scale }}
+                      draggable={false}
+                    />
+                  ))}
+                </div>
+              );
+            })}
           </div>
           {/* Kartka A4 PRAWA (Lustrzane odbicie) */}
           <div
@@ -194,35 +203,36 @@ export default function PrintModule({ lines, onBack }) {
                 paddingLeft: 60 * scale
               }}
             >
-              {mirroredLines.map((line, i) => (
-                <div
-                  key={i}
-                  style={{
-                    transform: "scaleX(-1)",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-start",
-                    justifyContent: "flex-start",
-                    margin: `${0 * scale}px 0 ${12 * scale}px 0`,
-                    minHeight: 96/3 * scale,
-                    filter: "invert(1)",
-                    maxWidth: "100%"
-                  }}
-                >
-                  {[...line].map((letter, j) => (
-                    <img
-                      key={j}
-                      src={letter.img}
-                      alt={letter.char}
-                      width={letter.width/3 * scale}
-                      height={96/3 * scale}
-                    // style={{ filter: invert(1), }} 
-                      draggable={false}
-
-                    />
-                  ))}
-                </div>
-              ))}
+              {mirroredLines.map((line, i) => {
+                const lineHeight = getLineHeight(line);
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      transform: "scaleX(-1)",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      justifyContent: "flex-start",
+                      margin: `${0 * scale}px 0 ${12 * scale}px 0`,
+                      minHeight: lineHeight * scale,
+                      filter: "invert(1)",
+                      maxWidth: "100%"
+                    }}
+                  >
+                    {[...line].map((letter, j) => (
+                      <img
+                        key={j}
+                        src={letter.img}
+                        alt={letter.char}
+                        width={letter.width * scale}
+                        height={(letter.height || BASE_LETTER_HEIGHT) * scale}
+                        draggable={false}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
