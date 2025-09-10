@@ -4,8 +4,15 @@ const A4_WIDTH = 796;
 const A4_HEIGHT = 1123;
 const SHEET_OFFSET_RIGHT = 120;
 const SHEET_OFFSET_TOP = 170;
-const LETTER_SCALE = 2;
-const LETTER_BASE_HEIGHT = 96 / 3;
+const LETTER_BASE_HEIGHT = 96;
+const LETTER_SCALE = 0.5;
+
+const getLineHeight = (line) => {
+  if (!line || line.length === 0) return LETTER_BASE_HEIGHT;
+  return Math.max(
+    ...line.map((l) => (l.height ? l.height * LETTER_SCALE : LETTER_BASE_HEIGHT))
+  );
+};
 
 
 
@@ -188,7 +195,7 @@ export default function PageComposer({
       return {
         background: "#e3f2ff",
         borderRadius: 4 * scale,
-        minHeight: LETTER_BASE_HEIGHT * LETTER_SCALE * scale,
+        minHeight: getLineHeight(lines[i]) * scale,
         outline: "2px dashed #28b0ef",
         transition: "background 0.12s",
       };
@@ -266,6 +273,7 @@ export default function PageComposer({
         >
           {lines.map((line, i) => {
             const isHidden = dragIndex === i;
+            const lineHeight = getLineHeight(line);
             return (
               <div
                 className="line-draggable"
@@ -277,7 +285,7 @@ export default function PageComposer({
                   alignItems: "flex-end",
                   justifyContent: "flex-end",
                   margin: `0 0 ${8 * scale}px 0`,
-                  minHeight: LETTER_BASE_HEIGHT * LETTER_SCALE * scale,
+                  minHeight: lineHeight * scale,
                   maxWidth: `calc(100% - ${sheetOffsetRight}px)`,
                   cursor: dragIndex === null ? "grab" : "default",
                   userSelect: "none",
@@ -287,13 +295,17 @@ export default function PageComposer({
                 onMouseDown={(e) => handleDragStart(i, e)}
                 onTouchStart={(e) => handleDragStart(i, e)}
               >
-                {line.map((letter, j) => (
+                  {line.map((letter, j) => (
                   <img
                     key={j}
                     src={letter.img}
                     alt={letter.char}
-                    width={(letter.width / 3) * scale * LETTER_SCALE}
-                    height={LETTER_BASE_HEIGHT * scale * LETTER_SCALE}
+                    width={letter.width * LETTER_SCALE * scale}
+                    height={
+                      (letter.height
+                        ? letter.height * LETTER_SCALE
+                        : LETTER_BASE_HEIGHT) * scale
+                    }
                     style={{ marginLeft: 0, pointerEvents: "none" }}
                     draggable={false}
                   />
@@ -319,6 +331,7 @@ export default function PageComposer({
                 transform: "scale(1.03)",
                 background: "#e4ecf4",
                 borderRadius: 4 * scale,
+                minHeight: getLineHeight(lines[dragIndex]) * scale,
               }}
             >
               {lines[dragIndex].map((letter, j) => (
@@ -326,8 +339,12 @@ export default function PageComposer({
                   key={j}
                   src={letter.img}
                   alt={letter.char}
-                  width={(letter.width / 3) * scale * LETTER_SCALE}
-                  height={LETTER_BASE_HEIGHT * scale * LETTER_SCALE}
+                  width={letter.width * LETTER_SCALE * scale}
+                  height={
+                    (letter.height
+                      ? letter.height * LETTER_SCALE
+                      : LETTER_BASE_HEIGHT) * scale
+                  }
                   style={{ marginLeft: 0, pointerEvents: "none" }}
                   draggable={false}
                 />
