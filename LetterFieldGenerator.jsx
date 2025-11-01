@@ -16,6 +16,7 @@ export default function LetterFieldGenerator() {
   const [step, setStep] = useState(0);       // 0: pierwszy klik, 1: drugi klik
   const [clicks, setClicks] = useState([]);
   const [fields, setFields] = useState([]);
+  const [fileName, setFileName] = useState("fields.json");
   const [literaIdx, setLiteraIdx] = useState(0);
   const kasztaRef = useRef();
 
@@ -69,6 +70,27 @@ export default function LetterFieldGenerator() {
       setClicks([]);
       setStep(0);
     }
+  }
+
+  const fieldsJson = fields.length > 0
+    ? JSON.stringify(fields, null, 2)
+    : "[]";
+
+  function handleSaveToFile() {
+    const safeName = (fileName && fileName.trim()) || "fields.json";
+    const finalName = safeName.toLowerCase().endsWith(".json")
+      ? safeName
+      : `${safeName}.json`;
+
+    const blob = new Blob([fieldsJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = finalName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
 return (
@@ -164,22 +186,59 @@ return (
     </div>
     
     <textarea
-      value={fields.map(f =>
-        `  { "char": "${f.char}", "x1": ${f.x1}, "y1": ${f.y1}, "x2": ${f.x2}, "y2": ${f.y2}, "img": "${f.img}" },`
-      ).join("\n")}
+      value={fieldsJson}
       readOnly
       style={{
         width: "100%",
-        minHeight: "180px",
+        minHeight: "220px",
         fontSize: "14px",
         fontFamily: "monospace",
         background: "#3b3c3d",
+        color: "#f8fafc",
         border: "1px solid #d1d5db",
         borderRadius: "4px",
-        padding: "8px"
+        padding: "12px"
       }}
       onFocus={e => e.target.select()}
     />
+    <div style={{
+      marginTop: "12px",
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "8px",
+      alignItems: "center"
+    }}>
+      <label style={{ fontSize: "14px", color: "#1f2937" }}>
+        Nazwa pliku:
+        <input
+          type="text"
+          value={fileName}
+          onChange={e => setFileName(e.target.value)}
+          style={{
+            marginLeft: "8px",
+            padding: "6px 8px",
+            border: "1px solid #9ca3af",
+            borderRadius: "6px",
+            minWidth: "160px"
+          }}
+        />
+      </label>
+      <button
+        onClick={handleSaveToFile}
+        disabled={fields.length === 0}
+        style={{
+          background: fields.length === 0 ? "#9ca3af" : "#2563eb",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          padding: "8px 16px",
+          cursor: fields.length === 0 ? "not-allowed" : "pointer",
+          transition: "background 0.2s ease"
+        }}
+      >
+        Zapisz plik JSON
+      </button>
+    </div>
     <div style={{fontSize:12, color:"#777", marginTop:10}}>
       Wskazujesz dwa kliknięcia dla każdej litery. Najpierw <b>małe</b>, potem <b>wielkie</b> litery.
       Ścieżka do obrazka dobierana jest automatycznie.
