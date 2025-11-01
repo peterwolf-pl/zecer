@@ -8,8 +8,8 @@ const ALFABET = [
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ",", "spacja"
 ];
 
-const KASZTA_WIDTH = 1618;
-const KASZTA_HEIGHT = 1080;
+const KASZTA_WIDTH = 2222;
+const KASZTA_HEIGHT = 1521;
 
 export default function LetterFieldGenerator() {
   const [mode, setMode] = useState("male");  // "male" lub "wielkie"
